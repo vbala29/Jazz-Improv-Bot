@@ -4,6 +4,10 @@
  * Github Repository: https://github.com/vbala29/Jazz-Improv-Bot#readme
  */
 
+/** ENTRY POINT
+ * File Descrption: Main express server/entry point file.
+ */
+
 const express = require('express')
 const process = require('process')
 const path = require('path')
@@ -16,7 +20,7 @@ const http = require('http');
 const fs = require('fs');
 const app = express()
 const session = require('express-session') //Adds to req param
-//const flash = require('connect-flash') //Adds to req param
+const flash = require('connect-flash') //Adds to req param
 const AppError = require('./AppError')
 const appLocals = require("./app.locals")
 
@@ -27,11 +31,13 @@ const port = process.env.PORT || 8000;
 const httpsUse = process.env.HTTPS === 'true';
 const secretKey = process.env.SECRET_KEY;
 
+/* Middleware */
+
+app.use(express.urlencoded({extended : true})) //Use extended true b/c qs library has more security. 
 app.use(session({secret: secretKey, resave: false, saveUninitialized: false}))
 app.use(express.static('public')); //Serve CSS and JS statics
 app.use('/css', express.static(__dirname + '/public/css')); // redirect CSS bootstrap
-
-//app.use(flash())
+app.use(flash())
 
 
 /* Routes */
@@ -77,15 +83,16 @@ app.get('/', (req, res) => {
 
 
 app.all('*', (req, res, next) => {
-    console.log("here1" + req.originalUrl);
-    next(new AppError('Resource Not Found', 404))
+    next(new AppError(`Resource Not Found At: ${req.originalUrl}`, 404))
 })
 
 //Custom Error Handling Middleware
 app.use((err, req, res, next) => {
-    //res.status(err.status).render('error', )
-    console.log("here2")
-    res.status(405).send();
+    if (err.statusCode === 404) {
+        res.render('partials/404.ejs')
+    } else {
+        next(err)
+    }
 })
 
 /* HTTPS Setup */ 

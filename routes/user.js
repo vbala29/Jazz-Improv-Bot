@@ -9,10 +9,18 @@ const router = express.Router();
 const User = require('../models/user');
 
 router.get('/register', (req, res) => {
-    console.log("here0" + req.originalUrl);
     res.render('users/register');
     res.end()
 })
 
+router.post('/register', async (req, res) => {
+    const {email, username, password, passwordVerify} = req.body;
+    console.log(req.body)
+    const user = new User({email : email, username : username, password : password});
+    const registeredUser = await User.register(user, password);
+    console.log(registeredUser);
+    req.flash("Welcome to Jazz Improv Bot")
+    res.redirect('\home')
+})
 
 module.exports = router;

@@ -7,7 +7,7 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true
-    }
+    },
 })
 
 //Adds password and username field automatically.
