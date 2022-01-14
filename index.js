@@ -18,6 +18,9 @@ const app = express()
 const session = require('express-session') //Adds to req param
 //const flash = require('connect-flash') //Adds to req param
 const AppError = require('./AppError')
+const appLocals = require("./app.locals")
+
+app.locals = appLocals
 
 /* ENV variables */
 const port = process.env.PORT || 8000;
@@ -25,6 +28,9 @@ const httpsUse = process.env.HTTPS === 'true';
 const secretKey = process.env.SECRET_KEY;
 
 app.use(session({secret: secretKey, resave: false, saveUninitialized: false}))
+app.use(express.static('public')); //Serve CSS and JS statics
+app.use('/css', express.static(__dirname + '/public/css')); // redirect CSS bootstrap
+
 //app.use(flash())
 
 
@@ -61,21 +67,25 @@ passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
 
-/* Error Routes */
+app.use('/', userRoutes);
 
 app.get('/', (req, res) => {
    res.send('Now using https..');
 });
 
-app.use('/', userRoutes)
+/* Error Routes */
+
 
 app.all('*', (req, res, next) => {
+    console.log("here1" + req.originalUrl);
     next(new AppError('Resource Not Found', 404))
 })
 
 //Custom Error Handling Middleware
-app.use((err, req, res) => {
-    res.status(err.status).render('error')
+app.use((err, req, res, next) => {
+    //res.status(err.status).render('error', )
+    console.log("here2")
+    res.status(405).send();
 })
 
 /* HTTPS Setup */ 

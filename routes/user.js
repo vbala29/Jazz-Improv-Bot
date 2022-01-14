@@ -9,7 +9,10 @@ const router = express.Router();
 const User = require('../models/user');
 
 router.get('/register', (req, res) => {
-    res.render('users/register')
+    console.log("here0" + req.originalUrl);
+    res.render('users/register');
+    res.end()
 })
+
 
 module.exports = router;
