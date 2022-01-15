@@ -6,8 +6,10 @@
 
 const express = require('express')
 const router = express.Router();
-const User = require('../models/user');
-const asyncHandler = require('../scripts/asyncHandler.js')
+const locals = require('../app.locals.js')
+const User = require(locals.models + '/user');
+const passport = require('passport');
+const asyncHandler = require(locals.scripts + '/asyncHandler.js')
 
 router.get('/register', (req, res) => {
     res.render('users/register', {error: req.flash("error"), success: req.flash("success")});
@@ -19,12 +21,22 @@ router.post('/register', asyncHandler(async (req, res) => {
         const {email, username, password, passwordVerify} = req.body;
         const user = new User({email : email, username : username, password : password});
         const registeredUser = await User.register(user, password);
-        req.flash('success', "Welcome to Jazz Improv Bot")
-        res.redirect('\home')
+        req.flash('success', "Please log in with your new account")
+        res.redirect('\login')
     } catch (ex) {
         req.flash('error', ex.message)
         res.redirect('register')
     }
 }))
+
+router.get('/login', (req, res) => {
+    res.render('users/login', {error: req.flash("error"), success: req.flash("success")})
+})
+
+router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: "/login" }), (req, res) => {
+    req.flash('success', `Welcome back`)
+    res.redirect("/improv")
+})
+
 
 module.exports = router;

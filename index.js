@@ -24,7 +24,7 @@ const flash = require('connect-flash') //Adds to req param
 const AppError = require('./scripts/AppError')
 const appLocals = require("./app.locals")
 
-app.locals = appLocals
+app.locals = {...appLocals}
 
 /* ENV variables */
 const port = process.env.PORT || 8000;
@@ -43,6 +43,7 @@ app.use(flash())
 /* Routes */
 
 const userRoutes = require('./routes/user')
+const improvRoutes = require('./routes/improv')
 
 /* MongoDB */
 
@@ -74,6 +75,7 @@ passport.deserializeUser(User.deserializeUser())
 
 
 app.use('/', userRoutes);
+app.use('/', improvRoutes);
 
 app.get('/', (req, res) => {
    res.send('Now using https..');
@@ -89,7 +91,7 @@ app.all('*', (req, res, next) => {
 //Custom Error Handling Middleware
 app.use((err, req, res, next) => {
     if (err.statusCode === 404) {
-        res.render('partials/404.ejs')
+        res.render(partials + '404.ejs')
     } else {
         next(err)
     }
