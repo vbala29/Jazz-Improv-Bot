@@ -21,7 +21,7 @@ const fs = require('fs');
 const app = express()
 const session = require('express-session') //Adds to req param
 const flash = require('connect-flash') //Adds to req param
-const AppError = require('./AppError')
+const AppError = require('./scripts/AppError')
 const appLocals = require("./app.locals")
 
 app.locals = appLocals

@@ -7,20 +7,24 @@
 const express = require('express')
 const router = express.Router();
 const User = require('../models/user');
+const asyncHandler = require('../scripts/asyncHandler.js')
 
 router.get('/register', (req, res) => {
-    res.render('users/register');
+    res.render('users/register', {error: req.flash("error"), success: req.flash("success")});
     res.end()
 })
 
-router.post('/register', async (req, res) => {
-    const {email, username, password, passwordVerify} = req.body;
-    console.log(req.body)
-    const user = new User({email : email, username : username, password : password});
-    const registeredUser = await User.register(user, password);
-    console.log(registeredUser);
-    req.flash("Welcome to Jazz Improv Bot")
-    res.redirect('\home')
-})
+router.post('/register', asyncHandler(async (req, res) => {
+    try {
+        const {email, username, password, passwordVerify} = req.body;
+        const user = new User({email : email, username : username, password : password});
+        const registeredUser = await User.register(user, password);
+        req.flash('success', "Welcome to Jazz Improv Bot")
+        res.redirect('\home')
+    } catch (ex) {
+        req.flash('error', ex.message)
+        res.redirect('register')
+    }
+}))
 
 module.exports = router;
