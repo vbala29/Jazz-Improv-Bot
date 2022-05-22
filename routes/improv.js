@@ -10,11 +10,11 @@
  const User = require(locals.models + '/user');
  const passport = require('passport');
  const asyncHandler = require(locals.scripts + '/asyncHandler.js')
- const { isLoggedIn } = require(locals.scripts + '/isLoggedIn')
+ const isLoggedIn = require(locals.scripts + '/isLoggedIn')
 
 
- router.get('/improv', (req, res) => {
-    res.render(locals.improv + '/improv.ejs', {error: req.flash("error"), success: req.flash("success")})
+ router.get('/improv', isLoggedIn, (req, res) => {
+    res.render('improv/improv.ejs', {error: req.flash("error"), success: req.flash("success")})
  })
 
 

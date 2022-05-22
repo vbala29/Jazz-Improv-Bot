@@ -33,6 +33,7 @@ router.get('/login', (req, res) => {
     res.render('users/login', {error: req.flash("error"), success: req.flash("success")})
 })
 
+//FailureFlash and failureRedirect are options inbuilt into Passport. Both callbacks get called unless failureRedirect is called. 
 router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: "/login" }), (req, res) => {
     req.flash('success', `Welcome back`)
     res.redirect("/improv")

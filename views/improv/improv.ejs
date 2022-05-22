@@ -8,3 +8,47 @@
 <%- include(partials + '/header.ejs') %>
 <%- include(partials + "/flash") %> 
 
+<script src="/js/chart.js"></script>
+
+<!--Info on how to use -->
+<section class="Instructions">
+    Information about how to do improv here
+</section>
+
+<!--Chart Creation -->
+<section class="Chart-Creation">
+    Create here
+    
+</section>
+
+<section>
+    <div style="margin-left: 20px; background-color: skyblue; background-size: contain; margin-right: 30px;">
+        <br>
+        <h4 style="margin-left: 20px;">Add Chord to Chart</h4>
+        <div class="row">
+            <label for="composition-name" class="form-label" style="margin-left: 20px;">Name of Composition</label>
+            <input type="text" class="form-control" id="composition-name" style="width: 300px; margin-left: 33px;">
+            <div id="composition-name" class="form-text" style="margin-left: 20px;">This will be name will saved to your account for future retrieval of your composition</div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <input type="text" id="chord" class="form-control" placeholder="Chord Abbreviation..." style="width: 300px; margin-left: 20px;">
+            </div>
+            <div class="col">
+                <input type="text" id="duration" class="form-control" placeholder="Number of Measures in 4/4 Time..." style="width: 300px; ">
+            </div>
+            <div class="col">   
+                <button class="btn btn-primary" onclick="addChord()">Add Chord</button>
+            </div>
+           
+        </div>
+        <br>
+    </div>
+    <br>
+    <div style="margin-left: 20px; background-color: darkseagreen; background-size: contain; margin-right: 30px;">
+        <ol id="chart" style="margin-left: 20px;">
+        
+        </ol>
+    </div>
+   
+</section>

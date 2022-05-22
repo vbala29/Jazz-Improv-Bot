@@ -15,5 +15,5 @@ module.exports = {
     partials: path.join(__dirname, 'views/partials'),
     models: path.join(__dirname, 'models'),
     scripts: path.join(__dirname, 'scripts'),
-    improv: path.join(__dirname, "improv")
+    improv: path.join(__dirname, "views/improv")
 }

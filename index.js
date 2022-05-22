@@ -4,6 +4,8 @@
  * Github Repository: https://github.com/vbala29/Jazz-Improv-Bot#readme
  */
 
+//Example of how to run app HTTPS="true" PORT=3000 SECRET_KEY="21wqdasc" nodemon index.js
+
 /** ENTRY POINT
  * File Descrption: Main express server/entry point file.
  */
@@ -36,7 +38,6 @@ const secretKey = process.env.SECRET_KEY;
 app.use(express.urlencoded({extended : true})) //Use extended true b/c qs library has more security. 
 app.use(session({secret: secretKey, resave: false, saveUninitialized: false}))
 app.use(express.static('public')); //Serve CSS and JS statics
-app.use('/css', express.static(__dirname + '/public/css')); // redirect CSS bootstrap
 app.use(flash())
 
 
@@ -78,7 +79,7 @@ app.use('/', userRoutes);
 app.use('/', improvRoutes);
 
 app.get('/', (req, res) => {
-   res.send('Now using https..');
+    res.render('home');
 });
 
 /* Error Routes */
@@ -91,7 +92,7 @@ app.all('*', (req, res, next) => {
 //Custom Error Handling Middleware
 app.use((err, req, res, next) => {
     if (err.statusCode === 404) {
-        res.render(partials + '404.ejs')
+        res.render('partials' + '/404.ejs')
     } else {
         next(err)
     }
@@ -111,6 +112,6 @@ app.listen(port, function () {
     var server = httpsUse ? https.createServer(app) : http.createServer(options, app);
     console.log("Server starting. Port: " + port + " Protocol: " + `${httpsUse ? 'HTTPS' : 'HTTP'}`);
     return server.listen.apply(server, arguments)
-})
+}) 
 
 
