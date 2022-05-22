@@ -39,5 +39,10 @@ router.post('/login', passport.authenticate('local', { failureFlash: true, failu
     res.redirect("/improv")
 })
 
+router.get('/logout', (req, res) => {
+    req.logout(); //Removes req.user property and clears session
+    res.redirect('/');
+})
+
 
 module.exports = router;
