@@ -3,6 +3,18 @@
 <%- include(partials + '/header.ejs') %>
 <%- include(partials + "/flash") %> 
 
+<% if(loggedOut) {%>
+    <% loggedOut.forEach(function(logOut) { %>
+       <% if(logOut.length > 0) {%>
+           <div class="alert alert-success alert-dismissible fade show" role="alert">
+               <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#check-circle-fill"/></svg>
+               <strong> <%= logOut %> </strong>
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+       <% } %>
+   <% }) %>
+<% } %>
+
 <!-- Allows for desired spacing and Logo Coloring -->
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">

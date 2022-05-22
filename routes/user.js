@@ -30,7 +30,7 @@ router.post('/register', asyncHandler(async (req, res) => {
 }))
 
 router.get('/login', (req, res) => {
-    res.render('users/login', {error: req.flash("error"), success: req.flash("success")})
+    res.render('users/login', {error: req.flash("error"), success: req.flash("success"), loggedOut: req.flash("loggedOut")})
 })
 
 //FailureFlash and failureRedirect are options inbuilt into Passport. Both callbacks get called unless failureRedirect is called. 
@@ -41,7 +41,8 @@ router.post('/login', passport.authenticate('local', { failureFlash: true, failu
 
 router.get('/logout', (req, res) => {
     req.logout(); //Removes req.user property and clears session
-    res.redirect('/');
+    req.flash('loggedOut', "You have succesfully been logged out")
+    res.redirect('/login');
 })
 
 
