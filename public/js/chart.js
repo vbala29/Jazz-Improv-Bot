@@ -40,11 +40,22 @@ function generateChartParams() {
     var section_chord_map = {};
     //Assign a key with the section name to the associated chord/duration pairs list.
     sections.forEach((section, index) => section_chord_map[section] = chord_duration_pairs[index]);
+    var info = {chartName: document.getElementById("composition-name").value};
+
     console.log(sections.toString());
     console.log(JSON.stringify(section_chord_map).toString());
-    //document.getElementById("composition-name").value
 
+    //JSON to be sent to backend to be made into Sharp11 Chart Object
+    var chartPackage = {sections: sections, content: section_chord_map, info: info};
 
+    fetch('http://localhost:3000/improv/generateChart', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(chartPackage)
+    }).catch(err => console.error(err))
 }
 
 //Add a new chord to the chart

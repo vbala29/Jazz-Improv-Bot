@@ -25,6 +25,8 @@ const session = require('express-session') //Adds to req param
 const flash = require('connect-flash') //Adds to req param
 const AppError = require('./scripts/AppError')
 const appLocals = require("./app.locals")
+//Cross origin resource sharing needed for front end to access express backend at different domain
+const cors = require('cors'); 
 
 app.locals = {...appLocals}
 
@@ -39,6 +41,10 @@ app.use(express.urlencoded({extended : true})) //Use extended true b/c qs librar
 app.use(session({secret: secretKey, resave: false, saveUninitialized: false}))
 app.use(express.static('public')); //Serve CSS and JS statics
 app.use(flash())
+app.use(express.json()) //Middleware to parse application/json body
+app.use(cors({
+    origin: '*'
+})); //Allow cross origin resource sharing so front end can access express routes
 
 
 /* Routes */
