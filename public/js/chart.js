@@ -19,6 +19,19 @@ var generateDeleteButtons = () => {
     }
 }
 
+//Calls all delete buttons to clear all entered chords
+var callDeleteButtons = () => {
+    var len = chordList.length;
+    for (var i = 0; i < len; i++) {
+        //Live list so only delete from first index
+        chordList[0].remove();
+    }
+
+    document.getElementById("chord").value = null;
+    document.getElementById("duration").value = null;
+    
+}
+
 //Generate chart from chords inputted.
 function generateChartParams() {
     let sections = ['A']; //Solely use one A section in compositions
@@ -55,9 +68,19 @@ function generateChartParams() {
             'Content-Type' : 'application/json'
         },
         body: JSON.stringify(chartPackage)
-    }).catch(err => console.error(err))
-}
+    }).then(
+        response => {
+            if (response.status === 406) {
+                alert("Invalid chord entries, server could not generate chart. Please read instructions.")
 
+            } else if (response.status === 201) {
+                alert("Chart succesfully created. Please select it from the dropdown to begin improvization!")
+            }
+
+            callDeleteButtons();
+        }
+    ).catch(err => alert(err))
+}
 
 
 //Add a new chord to the chart
