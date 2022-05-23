@@ -58,6 +58,8 @@ function generateChartParams() {
     }).catch(err => console.error(err))
 }
 
+
+
 //Add a new chord to the chart
 var addChord = () => {
     var li = document.createElement("li");
@@ -70,6 +72,26 @@ var addChord = () => {
     li.appendChild(txt);
 
     //Input validation
+    //https://stackoverflow.com/questions/11229080/regex-for-matching-a-music-chord
+    var notes = "^[CDEFGAB]",
+    accidentals = "(b|#)?",
+    chords = "(m7|7)?",
+    regex = new RegExp("\\b" + notes + accidentals + chords + "\\b", "g");
+
+    if(!regex.test(chordString)) {
+        alert("Invlalid Chord Entered, Please See Instructions")
+        document.getElementById("chord").value = null;
+        document.getElementById("duration").value = null;
+        return;
+    }
+
+    if (parseInt(duration) === undefined || duration <= 0) {
+        alert("Invlalid Duration (Not a Number or Negative) Entered, Please See Instructions")
+        document.getElementById("chord").value = null;
+        document.getElementById("duration").value = null;
+        return;
+    }
+
     document.getElementById("chart").appendChild(li);
     document.getElementById("chord").value = null;
     document.getElementById("duration").value = null;
