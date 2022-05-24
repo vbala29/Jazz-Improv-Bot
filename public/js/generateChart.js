@@ -1,3 +1,5 @@
+const DEBUG = 0;
+
 //List of chords entered by the user
 var chordList = document.getElementsByTagName("li"); //Live List!
 var deleteButtons = document.getElementsByClassName("delete"); ///Live list!
@@ -35,7 +37,9 @@ var callDeleteButtons = () => {
 //Generate chart from chords inputted.
 function generateChartParams() {
     let sections = ['A']; //Solely use one A section in compositions
-    let chord_duration_pairs = []; //2D list, outer list contains sections, inner lists are the chords in each section. 
+    let chord_duration_pairs = []; //2D list, outer list contains sections, inner lists are the chords in each section.
+    //Code configured for solely one section right now! 
+   
     //For each entered chord/duration add it to the chord_duration_pairs list.
     for (var s = 0; s < sections.length; s++) {
         let section_chord_duration_pairs = [];
@@ -53,10 +57,15 @@ function generateChartParams() {
     var section_chord_map = {};
     //Assign a key with the section name to the associated chord/duration pairs list.
     sections.forEach((section, index) => section_chord_map[section] = chord_duration_pairs[index]);
-    var info = {chartName: document.getElementById("composition-name").value};
+    var info = {title: document.getElementById("composition-name").value};
 
-    console.log(sections.toString());
-    console.log(JSON.stringify(section_chord_map).toString());
+    if (info.title.length === 0) {
+        alert("Please enter a non empty title!");
+        return;
+    }
+
+    if (DEBUG) console.log(sections.toString());
+    if (DEBUG) console.log(JSON.stringify(section_chord_map).toString());
 
     //JSON to be sent to backend to be made into Sharp11 Chart Object
     var chartPackage = {sections: sections, content: section_chord_map, info: info};
@@ -74,7 +83,8 @@ function generateChartParams() {
                 alert("Invalid chord entries, server could not generate chart. Please read instructions.")
 
             } else if (response.status === 201) {
-                alert("Chart succesfully created. Please select it from the dropdown to begin improvization!")
+                alert("Chart succesfully created. Please select it from the dropdown on the next page to begin improvization!")
+                window.location.href = "/improv/selectChart" //redirect to /improv/selectChart
             }
 
             callDeleteButtons();

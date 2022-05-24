@@ -8,6 +8,7 @@ const UserSchema = new Schema({
         required: true,
         unique: true
     },
+    charts: [{chart: {type: String, required: true}, title: {type: String, required: true}}]
 })
 
 //Adds password and username field automatically.
