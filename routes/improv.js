@@ -45,8 +45,17 @@ async function generateChartObject(sections, section_chord_map, info, username) 
    return 1;
 }
 
-router.get('/improv/improviseOnChart', isLoggedIn, (req, res) => {
-
+router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
+   console.log("Improv For Chart: " + req.body);
+   (async () => {
+      await User.findOne({'username': req.user.username}).exec(async (err, doc) => {
+         if (err) {
+            console.error("Error in Query /improv/improviseOnChart: " + err);
+         } else {
+            if (DEBUG) console.log("Result of Query: " + doc);
+         }
+      })
+   })();
 })
 
 router.get('/improv/selectChart', isLoggedIn, (req, res) => {

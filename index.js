@@ -41,6 +41,7 @@ app.use(express.urlencoded({extended : true})) //Use extended true b/c qs librar
 app.use(session({secret: secretKey, resave: false, saveUninitialized: false}))
 app.use(express.static('public')); //Serve CSS and JS statics
 app.use(flash())
+app.use(express.text()) //Parses text/
 app.use(express.json()) //Middleware to parse application/json body
 app.use(cors({
     origin: '*'
