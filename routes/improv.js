@@ -12,7 +12,8 @@ const passport = require('passport');
 const asyncHandler = require(locals.scripts + '/asyncHandler.js')
 const isLoggedIn = require(locals.scripts + '/isLoggedIn')
 const s11 = require('sharp11')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { Chart } = require('sharp11/lib/chart');
 
 const DEBUG = 0;
 
@@ -46,13 +47,32 @@ async function generateChartObject(sections, section_chord_map, info, username) 
 }
 
 router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
-   console.log("Improv For Chart: " + req.body);
+   if (DEBUG) console.log("Improv Requested For Chart: " + req.body);
+
    (async () => {
       await User.findOne({'username': req.user.username}).exec(async (err, doc) => {
          if (err) {
             console.error("Error in Query /improv/improviseOnChart: " + err);
          } else {
             if (DEBUG) console.log("Result of Query: " + doc);
+
+            let chartRequested = null;
+            for (c of doc.charts) {
+               let serialized_chart = c;
+               let chart = s11.chart.load(JSON.parse(serialized_chart.chart));
+               if (chart.info.title === req.body) {
+                  if (DEBUG) console.log("Chart requested has been found!")
+                  chartRequested = chart;
+                  break;
+               }
+            }
+
+            if (chartRequested === null) {
+               console.err("Unable to find chart with name \"" + req.body + "\" for user " + req.user.username);
+               res.sendStatus(400).end(); //BAD REQUEST 400 HTTP STATUS
+            } else {
+               console.log("Calling AWS Lambda function for " + chartRequested.info.title);
+            }
          }
       })
    })();
