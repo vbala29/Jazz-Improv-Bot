@@ -18,25 +18,16 @@ var generateSelectButtons = () => {
     }
 }
 
-async function retrieveChartList() {
-    fetch('http://localhost:3000/improv/retrieveChart', {
-        method: 'POST',
+async function selectChart() {
+    fetch('http://localhost:3000/improv/improviseOnChart', {
+        method: 'GET',
         mode: 'cors',
         headers: {
             'Content-Type' : 'application/json'
         },
     }).then(
-        async (response) => {
-            if (response.ok) {
-                console.log(response);
-                console.log(response.body);
-            } else {
-                alert("Server Error " + response.statusText);
-                window.location.href = '/improv'; //redirect to /improv
-            }
-        }
+        
     ).catch(err => alert("Server Error: " + err));
 };
 
 
-retrieveChartList();

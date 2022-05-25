@@ -21,10 +21,17 @@
 </section>
 
 <section>
-    <div style="margin-left: 20px; background-color: darkseagreen; background-size: contain; margin-right: 30px;">
-        <ol id="chart" style="margin-left: 20px;">
-        
+    <div>
+        <ol id="chart" style="margin-left: 20px; margin-bottom: 10px;">
+            <% for (var i = 0; i < length; i++) { %>
+                <br>
+                <div style ="margin-left: 0px; background-color: darkseagreen; background-size: contain; margin-right: 30px;">
+                    <li> Title of Chart: <%= view_params[i] %>         
+                        <button class="btn btn-primary" id="select-chart">Select Chart</button>
+                    </li>
+                </div>
+            <% } %>
         </ol>
     </div>
    
-</section>
+</section> 

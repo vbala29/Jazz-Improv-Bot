@@ -27,13 +27,13 @@ async function generateChartObject(sections, section_chord_map, info, username) 
    try {
       var chart = s11.chart.create(sections, section_chord_map, info); 
       var json_chart = JSON.stringify(chart.serialize());
-      await User.findOne({'username': username}).exec(async (err, docs) => {
+      await User.findOne({'username': username}).exec(async (err, doc) => {
          if (err) { 
             console.log("Error in Query /improv/generateChart: " + err);
          } else {
-            if (DEBUG) console.error("Result of Query: " + docs);
-            await docs.charts.push({chart: json_chart, title: info.title});
-            await docs.save();
+            if (DEBUG) console.error("Result of Query: " + doc);
+            await doc.charts.push({chart: json_chart, title: info.title});
+            await doc.save();
          } 
       });
      
@@ -45,23 +45,33 @@ async function generateChartObject(sections, section_chord_map, info, username) 
    return 1;
 }
 
-router.get('/improv/retrieveCharts', isLoggedIn, (req, res) => {
-  (async () => {
-         await User.findOne({'username': username}).exec(async (err, docs) => {
-            if (err) { 
-               console.error("Error in Query /improv/retrieveCharts: " + err);
-            } else {
-               if (1) console.log("Result of Query: " + docs);
-               var ret = {charts: docs.charts};
-               res.setHeader('Content-Type', 'application/json');
-               res.end(JSON.stringify(ret)); //OK Response HTTP 200
-            } 
-         });
-   })();
+router.get('/improv/improviseOnChart', isLoggedIn, (req, res) => {
+
 })
 
 router.get('/improv/selectChart', isLoggedIn, (req, res) => {
-   res.render('improv/selectChart.ejs');
+   (async () => {
+      await User.findOne({'username': req.user.username}).exec(async (err, doc) => {
+         if (err) { 
+            console.error("Error in Query /improv/retrieveCharts: " + err);
+         } else {
+            if (DEBUG) console.log("Result of Query: " + doc);
+
+            var view_params = {};
+            var i = 0;
+            for (c of doc.charts) {
+               let serialized_chart = c;
+               let chart = s11.chart.load(JSON.parse(serialized_chart.chart));
+               view_params[i] = chart.info.title; 
+               if (DEBUG) console.log("Title #" + i + ": " + chart.info.title);
+               i++;
+            }
+
+            res.render('improv/selectChart.ejs', {view_params: view_params, length: Object.keys(view_params).length});
+         } 
+      });
+   })();
+   
 })
 
 router.post('/improv/generateChart', isLoggedIn, (req, res) => {
