@@ -9,6 +9,9 @@
 
 <script src="/js/selectChart.js"></script>
 
+<body onload="generateCallbacks()">
+    
+
 <!--Info on how to use -->
 <section class="Instructions">
     Information about how to do improv here
@@ -27,7 +30,7 @@
                 <br>
                 <div style ="margin-left: 0px; background-color: darkseagreen; background-size: contain; margin-right: 30px;">
                     <li> Title of Chart: <%= view_params[i] %>         
-                        <button class="btn btn-primary" id="select-chart">Select Chart</button>
+                        <button class="btn btn-primary select-button" id="<%=view_params[i]%>">Select Chart</button>
                     </li>
                 </div>
             <% } %>
@@ -35,3 +38,5 @@
     </div>
    
 </section> 
+
+</body>
