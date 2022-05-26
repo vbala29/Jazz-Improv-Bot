@@ -5,7 +5,7 @@ var generateCallbacks = () => {
     for (var i = 0; i < chartList.length; i++) {
         chartList[i].addEventListener('click', function() {
             fetch('http://localhost:3000/improv/improviseOnChart', {
-                method: 'POST',
+                method: 'PUT',
                 mode: 'cors',
                 headers: {
                     'Content-Type' : 'text/plain'

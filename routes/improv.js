@@ -46,7 +46,7 @@ async function generateChartObject(sections, section_chord_map, info, username) 
    return 1;
 }
 
-router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
+router.put('/improv/improviseOnChart', isLoggedIn, (req, res) => {
    if (DEBUG) console.log("Improv Requested For Chart: " + req.body);
 
    (async () => {
