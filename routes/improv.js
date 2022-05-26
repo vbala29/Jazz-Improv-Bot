@@ -49,7 +49,7 @@ async function generateChartObject(sections, section_chord_map, info, username) 
 }
 
 router.put('/improv/improviseOnChart', isLoggedIn, (req, res) => {
-   if (1) console.log("Improv Requested For Chart: " + req.body);
+   if (DEBUG) console.log("Improv Requested For Chart: " + req.body);
 
    (async () => {
       await User.findOne({'username': req.user.username}).exec(async (err, doc) => {
@@ -96,12 +96,15 @@ const lambda = (chart) => {
    };
 
    const result = new AWS.Lambda().invoke(params, (err, data) => {
-      if (err) console.log(err, err.stack);
-      else console.log(data)
+      if (err) {
+         console.log(err, err.stack);
+      }
+      else {
+         console.log("AWS Lambda Successful Invocation. Result Below")
+         console.log(data)
+      }
    })
 
-   console.log('Success running Lambda Function!')
-   console.log('Result of Lambda Function: ' + result);
 }
 
 router.get('/improv/selectChart', isLoggedIn, (req, res) => {
