@@ -16,6 +16,7 @@ const mongoose = require('mongoose');
 const { Chart } = require('sharp11/lib/chart');
 const AWS = require ('aws-sdk');
 const process = require('process')
+const improv = require('sharp11-improv')
 
 const DEBUG = 0;
 
@@ -74,14 +75,27 @@ router.put('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                res.sendStatus(400).end(); //BAD REQUEST 400 HTTP STATUS
             } else {
                console.log("Calling AWS Lambda function for " + chartRequested.info.title);
-               lambda(JSON.stringify(chartRequested.serialize()));
+               lambda(JSON.stringify(chartRequested.serialize())).then(
+                  (data) => {
+                  console.log("AWS Lambda Successful Invocation. Result Below")
+                  console.log(data)
+
+                  // Web audio play improv
+                  if (data != null) {
+                     var improv = JSON.parse(data.Payload);
+                     var notes_and_durations = JSON.parse(notes_and_durations.improv);
+                     console.log(notes_and_durations);
+                  }
+               }).catch(err => console.log(err));
+
+            
             }
          }
       })
    })();
 })
 
-const lambda = (chart) => {
+const lambda = async (chart) => {
    AWS.config.update({
       accessKeyId: process.env.accessKeyId, 
       secretAccessKey: process.env.secretAccessKey,
@@ -95,16 +109,8 @@ const lambda = (chart) => {
       })
    };
 
-   const result = new AWS.Lambda().invoke(params, (err, data) => {
-      if (err) {
-         console.log(err, err.stack);
-      }
-      else {
-         console.log("AWS Lambda Successful Invocation. Result Below")
-         console.log(data)
-      }
-   })
-
+   const lambda = new AWS.Lambda();
+   return await lambda.invoke(params).promise();
 }
 
 router.get('/improv/selectChart', isLoggedIn, (req, res) => {

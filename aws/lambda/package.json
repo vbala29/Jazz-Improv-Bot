@@ -10,6 +10,7 @@
   "author": "Vikram Bala",
   "license": "ISC",
   "dependencies": {
-    "sharp11": "^2.0.2"
+    "sharp11": "^2.0.2",
+    "sharp11-improv": "^1.0.1"
   }
 }
