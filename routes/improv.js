@@ -74,15 +74,14 @@ router.put('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                res.sendStatus(400).end(); //BAD REQUEST 400 HTTP STATUS
             } else {
                console.log("Calling AWS Lambda function for " + chartRequested.info.title);
-               
-               lambda();
+               lambda(JSON.stringify(chartRequested.serialize()));
             }
          }
       })
    })();
 })
 
-const lambda = () => {
+const lambda = (chart) => {
    AWS.config.update({
       accessKeyId: process.env.accessKeyId, 
       secretAccessKey: process.env.secretAccessKey,
@@ -92,7 +91,7 @@ const lambda = () => {
    const params = {
       FunctionName: 'jazz-improv-bot',
       Payload: JSON.stringify({
-         'key': 4
+         'chart': chart
       })
    };
 
