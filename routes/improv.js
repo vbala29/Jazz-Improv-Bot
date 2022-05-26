@@ -14,6 +14,8 @@ const isLoggedIn = require(locals.scripts + '/isLoggedIn')
 const s11 = require('sharp11')
 const mongoose = require('mongoose');
 const { Chart } = require('sharp11/lib/chart');
+const AWS = require ('aws-sdk');
+const process = require('process')
 
 const DEBUG = 0;
 
@@ -47,7 +49,7 @@ async function generateChartObject(sections, section_chord_map, info, username) 
 }
 
 router.put('/improv/improviseOnChart', isLoggedIn, (req, res) => {
-   if (DEBUG) console.log("Improv Requested For Chart: " + req.body);
+   if (1) console.log("Improv Requested For Chart: " + req.body);
 
    (async () => {
       await User.findOne({'username': req.user.username}).exec(async (err, doc) => {
@@ -72,11 +74,36 @@ router.put('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                res.sendStatus(400).end(); //BAD REQUEST 400 HTTP STATUS
             } else {
                console.log("Calling AWS Lambda function for " + chartRequested.info.title);
+               
+               lambda();
             }
          }
       })
    })();
 })
+
+const lambda = () => {
+   AWS.config.update({
+      accessKeyId: process.env.accessKeyId, 
+      secretAccessKey: process.env.secretAccessKey,
+      region: 'us-east-1'
+   });
+
+   const params = {
+      FunctionName: 'jazz-improv-bot',
+      Payload: JSON.stringify({
+         'key': 4
+      })
+   };
+
+   const result = new AWS.Lambda().invoke(params, (err, data) => {
+      if (err) console.log(err, err.stack);
+      else console.log(data)
+   })
+
+   console.log('Success running Lambda Function!')
+   console.log('Result of Lambda Function: ' + result);
+}
 
 router.get('/improv/selectChart', isLoggedIn, (req, res) => {
    (async () => {
