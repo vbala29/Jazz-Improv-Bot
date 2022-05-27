@@ -1,3 +1,9 @@
+/**
+ * Developer: Vikram Bala
+ * Contact: vikrambala2002@gmail.com
+ * Github Repository: https://github.com/vbala29/Jazz-Improv-Bot#readme
+ */
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');

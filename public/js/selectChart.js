@@ -1,6 +1,36 @@
+/**
+ * Developer: Vikram Bala
+ * Contact: vikrambala2002@gmail.com
+ * Github Repository: https://github.com/vbala29/Jazz-Improv-Bot#readme
+ */
+
 //List of chords entered by the user
 var chartList = document.getElementsByClassName("select-button"); //Live List!
 var chartDeleteList = document.getElementsByClassName("delete-button"); //Live List!
+
+
+
+var tempo = document.getElementById('tempo'); 
+var tempo_text = document.getElementById('tempo-text')
+//Update the slider value text box each time the slider changes
+tempo_text.innerHTML = tempo.value.toString() + " bpm";
+tempo.oninput = () => tempo_text.innerHTML = tempo.value.toString() + " bpm";
+
+var rests = document.getElementById('rests'); 
+var rests_text = document.getElementById('rests-text')
+//Update the slider value text box each time the slider changes
+rests_text.innerHTML = rests.value.toString() + " % chance of rest each note";
+rests.oninput = () => rests_text.innerHTML = rests.value.toString() + "% chance of rest each note";
+
+
+
+var substitutions = document.getElementById('substitutions'); 
+var substitutions_text = document.getElementById('substitutions-text')
+//Update the slider value text box each time the slider changes
+substitutions_text.innerHTML = substitutions.value.toString() + "% chance of substituion each chord";
+substitutions.oninput = () => substitutions_text.innerHTML = substitutions.value.toString() + "% chance of substitution each chord";
+
+
 
 var context = new AudioContext();
 

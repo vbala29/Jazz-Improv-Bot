@@ -6,8 +6,7 @@
  
 -->
 <%- include(partials + '/header.ejs') %>
-
-<script src="/js/selectChart.js"></script>
+<link rel="stylesheet" href="/css/selectChart.css">
 
 <body onload="generateCallbacks()"> </body>
     
@@ -28,6 +27,52 @@
 <!-- Used in selectChart.js to display chord changes that get highlighted-->
 <section class="chart">
     <div class="d-flex justify-content-center chart-div">
+    </div>
+</section>
+
+<!-- Used in selectChart.js to set tempo, and in AWS lambda request for rests, "out"-ness, and substitution parameter-->
+<section class="improv-parameters" style="margin-left:35px; margin-right:35px;">
+    <div class="card">
+        <div class="card-header">
+            Improvization Settings
+          </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="card col">
+                    <div class="card-body mx-auto">
+                        <div class="slidecontainer" style="margin-left:60px">
+                            <div class="card-header text-primary" style="width: 16rem;"> Tempo </div>
+                            <input id="tempo" type="range" min="50" max="300" value="120" class="slider">
+                            <div id="tempo-text" class="card-text text-center" style="width: 16rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card col">
+                    <div class="card-body mx-auto">
+                        <div class="slidecontainer">
+                            <div class="card-header text-primary" style="text-align: center; width: 16rem;"> Frequency of Rests </div>
+                            <input id="rests" type="range" min="0" max="50" value="25" class="slider">
+                            <div id="rests-text" class="card-text text-center" style="width: 16rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card col">
+                    <div class="card-body mx-auto">
+                        <div class="slidecontainer">
+                            <div class="card-header text-primary" style="width: 16rem;"> Chord Substitions </div>
+                            <input id="substitutions" type="range" min="0" max="100" value="50" class="slider">
+                            <div id="substitutions-text" class="card-text text-center" style="width: 16rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+               
+        </div>
     </div>
 </section>
 
@@ -52,3 +97,4 @@
 </section> 
 
 </body>
+<script src="/js/selectChart.js"></script>

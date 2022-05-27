@@ -1,3 +1,9 @@
+/**
+ * Developer: Vikram Bala
+ * Contact: vikrambala2002@gmail.com
+ * Github Repository: https://github.com/vbala29/Jazz-Improv-Bot#readme
+ */
+
 const s11 = require('sharp11')
 const improv = require('sharp11-improv')
 
