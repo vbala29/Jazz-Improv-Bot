@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A website that takes in your Jazz Compositions and improvises over the chart.",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -26,17 +27,18 @@
   "homepage": "https://github.com/vbala29/Jazz-Improv-Bot#readme",
   "dependencies": {
     "aws-sdk": "^2.1143.0",
+    "buffer": "^6.0.3",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
     "ejs": "^3.1.6",
     "express": "^4.17.2",
     "express-session": "^1.17.2",
     "mongoose": "^6.1.6",
+    "node-modules": "^1.0.1",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.1.0",
     "sharp11": "^2.0.2",
-    "sharp11-improv": "^1.0.1",
-    "sharp11-web-audio": "^1.0.5"
+    "sharp11-improv": "^1.0.1"
   }
 }

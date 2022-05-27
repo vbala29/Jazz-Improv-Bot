@@ -13,7 +13,6 @@ const asyncHandler = require(locals.scripts + '/asyncHandler.js')
 const isLoggedIn = require(locals.scripts + '/isLoggedIn')
 const s11 = require('sharp11')
 const mongoose = require('mongoose');
-const { Chart } = require('sharp11/lib/chart');
 const AWS = require ('aws-sdk');
 const process = require('process')
 const improv = require('sharp11-improv')
@@ -49,7 +48,7 @@ async function generateChartObject(sections, section_chord_map, info, username) 
    return 1;
 }
 
-router.put('/improv/improviseOnChart', isLoggedIn, (req, res) => {
+router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
    if (DEBUG) console.log("Improv Requested For Chart: " + req.body);
 
    (async () => {
@@ -77,18 +76,22 @@ router.put('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                console.log("Calling AWS Lambda function for " + chartRequested.info.title);
                lambda(JSON.stringify(chartRequested.serialize())).then(
                   (data) => {
-                  console.log("AWS Lambda Successful Invocation. Result Below")
-                  console.log(data)
+                  console.log("AWS Lambda Successful Invocation");
+                  console.log(data);
 
-                  // Web audio play improv
+                  //Send improv data back to the front end FETCH API request so it can play the improv
                   if (data != null) {
-                     var improv = JSON.parse(data.Payload);
-                     var notes_and_durations = JSON.parse(notes_and_durations.improv);
-                     console.log(notes_and_durations);
+                     var payload = JSON.parse(data.Payload);
+                     var notes_and_durations = JSON.parse(payload.improv);
+                     res.setHeader('Content-Type', 'application/json');
+                     res.end(JSON.stringify(notes_and_durations))
+                  } else {
+                     res.sendStatus(500); //Internal server error HTTP status code
                   }
-               }).catch(err => console.log(err));
-
-            
+               }).catch(err => {
+                  console.log(err)
+                  res.sendStatus(500); //Internal server error HTTP status code
+               });
             }
          }
       })
