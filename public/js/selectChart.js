@@ -1,5 +1,6 @@
 //List of chords entered by the user
 var chartList = document.getElementsByClassName("select-button"); //Live List!
+var chartDeleteList = document.getElementsByClassName("delete-button"); //Live List!
 
 var context = new AudioContext();
 
@@ -212,6 +213,30 @@ function generateCallbacks() {
     for (var i = 0; i < chartList.length; i++) {
         chartList[i].addEventListener('click', lambdaCall);
     }
+    
+    for (var i = 0; i < chartDeleteList.length; i++) {
+        chartDeleteList[i].addEventListener('click', deleteChart);
+    }
+}
+
+
+function deleteChart() {
+    fetch('http://localhost:3000/improv/deleteChart', {
+        method: 'DELETE',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'text/plain'
+        },
+        body: this.id
+    }).then(res => {
+        if (res.status !== 204) {
+            console.error("Unable to delete chart, servor error. (" + res.statusText + ")");
+        }
+    }).catch(err => {
+        console.error("Unable to delete chart, servor error. (" + err + ")");
+    })
+
+    location.reload();
 }
 
 function lambdaCall() {

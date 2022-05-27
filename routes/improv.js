@@ -167,5 +167,38 @@ router.get('/improv', isLoggedIn, (req, res) => {
    res.render('improv/improv.ejs', {error: req.flash("error"), success: req.flash("success")})
 })
 
+router.delete('/improv/deleteChart', isLoggedIn, (req, res) => {
+   var body = req.body; //Plain text
+   User.findOne({'username': req.user.username}).exec((err, doc) => {
+      if (err) {
+         console.error("Unable to find user to deleteChart. Username: " + req.user.username);
+      } else {
+
+         var index = 0;
+         for (c of doc.charts) {
+            let serialized_chart = c;
+            let chart = s11.chart.load(JSON.parse(serialized_chart.chart));
+
+            if (chart.info.title === body) {
+               doc.charts.splice(index, 1); //Remove this chart
+               doc.save((err) => {
+                  if (err) {
+                     console.log("Error in deleting chart");
+                     res.sendStatus(500); //HTTP 500 Internal Servor Error
+                  } else {
+                     res.sendStatus(204); //HTTP 204 Resource Deleted Successfully
+                  }
+
+                  res.end();
+               })
+               
+               return;
+            }
+            index++
+         }
+      }
+   })
+})
+
 
 module.exports = router;
