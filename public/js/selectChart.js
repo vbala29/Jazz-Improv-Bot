@@ -249,7 +249,7 @@ function lambdaCall() {
         //Stop displaying loading icon
         document.getElementsByClassName('spinner')[0].innerHTML = '';
 
-        displayChart(data.chart)
+        displayChart(data.chart);
         audioForImproization(data.improv);
     }).catch(err => {
         alert("ERROR: Front End Improvization Processing Failed");
@@ -328,6 +328,7 @@ async function audioForImproization(improv_array) {
                     if (interrupt) {
                         interrupt = false;
                         running = false;
+                        console.log("Got interrupted")
                         return;
                     }
 
@@ -366,9 +367,11 @@ async function audioForImproization(improv_array) {
 
         //Make sure that any previouisly called charts have beeen cleared/stop playing
         cleanUpDisplayAndAudio();
+        running = false;
 
     } catch (err) {
         running = false;
+        interrupt = false;
         console.log("Error in audioForImprovization(). Error: " + err);
     }
 }
