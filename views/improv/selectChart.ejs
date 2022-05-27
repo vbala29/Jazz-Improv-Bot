@@ -9,26 +9,62 @@
 <link rel="stylesheet" href="/css/selectChart.css">
 
 <body onload="generateCallbacks()"> </body>
+
+
+<div class="p-4 bg-light text-success rounded-3">
+    <div class="container-fluid py-1">
+      <h1 class="display-6 fw-bold">Improvization Bot</h1>
+      <p class="col-md-8 fs-7">
+          Information about the bot.
+      </p>
+      
+
+
+       <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Instructions 
+    </button>
     
-<!--Info on how to use -->
-<section class="Instructions">
-    Information about how to do improv here
-</section>
-
-<!--Chart Creation -->
-<section class="Select-Chart">
-    Create here
-    
-</section>
-
-<!-- Used in selectChart.js to show loading icon when AWS request is being done-->
-<section class="spinner"></section>
-
-<!-- Used in selectChart.js to display chord changes that get highlighted-->
-<section class="chart">
-    <div class="d-flex justify-content-center chart-div">
+    <!-- Modal -->
+    <div class="modal fade text-secondary" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">How to Use the Improvization Bot</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            Information goes here
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
     </div>
-</section>
+    </div>
+</div>    
+<br>
+
+
+
+<div class="card" style="margin-left:70px; margin-right:70px">
+    <div class="card-header">Audio Visualizer</div>
+    <div class="card-body">
+        <!-- Used in selectChart.js to show loading icon when AWS request is being done-->
+        <section class="spinner"></section>
+
+        <!-- Used in selectChart.js to display chord changes that get highlighted-->
+        <section class="chart">
+            <div class="d-flex justify-content-center chart-div"></div>
+        </section>
+
+        <!-- Used in selectChart.js to display note being played-->
+        <section class="note card-text text-warning"></section>
+    </div>
+</div>
+
+<br>    
 
 <!-- Used in selectChart.js to set tempo, and in AWS lambda request for rests, "out"-ness, and substitution parameter-->
 <section class="improv-parameters" style="margin-left:35px; margin-right:35px;">
@@ -105,9 +141,6 @@
         </div>
     </div>
 </section>
-
-<!-- Used in selectChart.js to display note being played-->
-<section class="note"></section>
 
 <section>
     <div>

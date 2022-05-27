@@ -10,22 +10,55 @@
 
 <script src="/js/generateChart.js"></script>
 
-<!--Info on how to use -->
-<section class="Instructions">
-    Information about how to do improv here.
-    If you just want to use one of your prior created charts, click here
-    <br>
-    <a href="/improv/selectChart">
-        <button class="btn btn-secondary" style="margin-left: 20px;">Select Prior Chart</button>
-    </a>
-    
-</section>
 
-<!--Chart Creation -->
-<section class="Chart-Creation">
-    Create here
+<div class="p-4 bg-light text-success rounded-3">
+    <div class="container-fluid py-1">
+      <h1 class="display-6 fw-bold">Chart Maker</h1>
+      <p class="col-md-8 fs-7">
+          Information about the chart maker.
+      </p>
+      
+
+ 
+        <!-- Button trigger modal -->
+        <div class="row">
+            <div class="col-md-1">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Instructions 
+                </button>
+            </div>
+            <div class="col-md-2">
+                <a href="/improv/selectChart">
+                    <button class="btn btn-secondary" style="margin-left: 20px;">Select Prior Chart</button>
+                </a>
+            </div>             
+      </div>
+
+        <!-- Modal -->
+        <div class="modal fade text-secondary" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">How to Use the Chart Maker</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                Information goes here
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+
     
-</section>
+
+</div>
+
+
 
 <section>
     <div style="margin-left: 20px; background-color: skyblue; background-size: contain; margin-right: 30px;">
