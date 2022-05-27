@@ -77,14 +77,19 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                lambda(JSON.stringify(chartRequested.serialize())).then(
                   (data) => {
                   console.log("AWS Lambda Successful Invocation");
-                  console.log(data);
 
                   //Send improv data back to the front end FETCH API request so it can play the improv
                   if (data != null) {
                      var payload = JSON.parse(data.Payload);
                      var notes_and_durations = JSON.parse(payload.improv);
+
                      res.setHeader('Content-Type', 'application/json');
-                     res.end(JSON.stringify(notes_and_durations))
+                     res.end(JSON.stringify(
+                              {
+                                 improv: notes_and_durations,
+                                 chart: chartRequested.content['A']
+                              }
+                     ));
                   } else {
                      res.sendStatus(500); //Internal server error HTTP status code
                   }

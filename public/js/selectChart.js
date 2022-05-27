@@ -197,6 +197,12 @@ function generateCallbacks() {
 }
 
 function lambdaCall() {
+    document.getElementsByClassName('spinner')[0].innerHTML = 
+        "<div class=\"d-flex justify-content-center\">" + 
+        " <div class=\"spinner-border text-primary\" role=\"status\">" +
+        "<span class=\"visually-hidden\">Loading...</span> </div>" + 
+        "</div>";
+
     fetch('http://localhost:3000/improv/improviseOnChart', {
         method: 'POST',
         mode: 'cors',
@@ -207,13 +213,31 @@ function lambdaCall() {
     }).then((res) => {
         console.log("Selected:  " + this.id);
         if (res.status === 500) {
-            alert('Improvization Unable to be Generation. (' + res.statusText + ')');
+            alert('Improvization engine unable to do generation. Error: (' + res.statusText + ')');
         } else {
             return res.json();
         }
     }).then(data => {
-        audioForImproization(data);
-    }).catch(err => alert("Server Error: " + err));
+        document.getElementsByClassName('spinner')[0].innerHTML = '';
+        displayChart(data.chart)
+        audioForImproization(data.improv);
+    }).catch(err => {
+        alert("ERROR: Front End Improvization Processing Failed");
+        console.log("ERROR: Front End Improvization Processing Failed. \nError: " + err)
+    });
+}
+
+function displayChart(chart) {
+    var chart_section = document.getElementsByClassName('chart')[0];
+    
+    //var index is used in id field so that audioForImproization() can highlight the chords
+    //as it plays over them.
+    var index = 0;
+    for (pair of chart) {
+        chart_section.innerHTML += "<div id=" + index + "class=\"badge bg-primary text-wrap\" style=\"width: 6rem;\">" +
+        "Chord: " + pair.chord.name + " Beats: " + pair.duration.beats + "</div>";
+        index++; 
+    }
 }
 
 async function audioForImproization(improv_array) {

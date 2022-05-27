@@ -118,7 +118,7 @@ var addChord = () => {
         return;
     }
 
-    if (isNan(parseInt(duration))|| duration <= 0) {
+    if (isNaN(parseInt(duration))|| duration <= 0) {
         alert("Invlalid Duration (Not a Number or Negative) Entered, Please See Instructions")
         document.getElementById("chord").value = null;
         document.getElementById("duration").value = null;
