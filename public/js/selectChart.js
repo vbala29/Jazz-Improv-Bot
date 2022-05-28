@@ -286,13 +286,26 @@ function lambdaCall() {
         "<span class=\"visually-hidden\">Loading...</span> </div>" + 
         "</div>";
 
+    var outness = document.getElementById('outness');
+    var outness_string = outness.options[outness.selectedIndex].text;
+    var tempo_string = document.getElementById('tempo').value;
+    var rests_string = document.getElementById('rests').value;
+    var substitutions_string = document.getElementById('substitutions').value
+    var improv_params = {
+        title: this.id,
+        outness: outness_string,
+        tempo: tempo_string,
+        rests: rests_string,
+        substitutions: substitutions_string
+    }
+
     fetch('http://localhost:3000/improv/improviseOnChart', {
         method: 'POST',
         mode: 'cors',
         headers: {
-            'Content-Type' : 'text/plain'
+            'Content-Type' : 'application/json'
         },
-        body: this.id
+        body: JSON.stringify(improv_params)
     }).then((res) => {
         console.log("Selected:  " + this.id);
         if (res.status === 500) {

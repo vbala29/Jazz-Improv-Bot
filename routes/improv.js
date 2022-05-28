@@ -49,7 +49,7 @@ async function generateChartObject(sections, section_chord_map, info, username) 
 }
 
 router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
-   if (DEBUG) console.log("Improv Requested For Chart: " + req.body);
+   if (DEBUG) console.log("Improv Requested For Chart: " + req.body.title);
 
    (async () => {
       await User.findOne({'username': req.user.username}).exec(async (err, doc) => {
@@ -62,7 +62,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
             for (c of doc.charts) {
                let serialized_chart = c;
                let chart = s11.chart.load(JSON.parse(serialized_chart.chart));
-               if (chart.info.title === req.body) {
+               if (chart.info.title === req.body.title) {
                   if (DEBUG) console.log("Chart requested has been found!")
                   chartRequested = chart;
                   break;
@@ -70,40 +70,41 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
             }
 
             if (chartRequested === null) {
-               console.err("Unable to find chart with name \"" + req.body + "\" for user " + req.user.username);
+               console.error("Unable to find chart with name \"" + req.body.title + "\" for user " + req.user.username);
                res.sendStatus(400).end(); //BAD REQUEST 400 HTTP STATUS
             } else {
                console.log("Calling AWS Lambda function for " + chartRequested.info.title);
-               lambda(JSON.stringify(chartRequested.serialize())).then(
-                  (data) => {
-                  console.log("AWS Lambda Successful Invocation");
+               lambda(JSON.stringify(chartRequested.serialize()), req.body.rests,
+                  req.body.outness, req.body.substitutions).then(
+                     (data) => {
+                     console.log("AWS Lambda Successful Invocation");
 
-                  //Send improv data back to the front end FETCH API request so it can play the improv
-                  if (data != null) {
-                     var payload = JSON.parse(data.Payload);
-                     var notes_and_durations = JSON.parse(payload.improv);
+                     //Send improv data back to the front end FETCH API request so it can play the improv
+                     if (data != null) {
+                        var payload = JSON.parse(data.Payload);
+                        var notes_and_durations = JSON.parse(payload.improv);
 
-                     res.setHeader('Content-Type', 'application/json');
-                     res.end(JSON.stringify(
-                              {
-                                 improv: notes_and_durations,
-                                 chart: chartRequested.content['A']
-                              }
-                     ));
-                  } else {
+                        res.setHeader('Content-Type', 'application/json');
+                        res.end(JSON.stringify(
+                                 {
+                                    improv: notes_and_durations,
+                                    chart: chartRequested.content['A']
+                                 }
+                        ));
+                     } else {
+                        res.sendStatus(500); //Internal server error HTTP status code
+                     }
+                  }).catch(err => {
+                     console.log(err)
                      res.sendStatus(500); //Internal server error HTTP status code
-                  }
-               }).catch(err => {
-                  console.log(err)
-                  res.sendStatus(500); //Internal server error HTTP status code
-               });
+                  });
             }
          }
       })
    })();
 })
 
-const lambda = async (chart) => {
+const lambda = async (chart, rests, outness, substitutions) => {
    AWS.config.update({
       accessKeyId: process.env.accessKeyId, 
       secretAccessKey: process.env.secretAccessKey,
@@ -113,7 +114,10 @@ const lambda = async (chart) => {
    const params = {
       FunctionName: 'jazz-improv-bot',
       Payload: JSON.stringify({
-         'chart': chart
+         'chart': chart,
+         'rests': rests,
+         'outness': outness,
+         'substitutions': substitutions
       })
    };
 

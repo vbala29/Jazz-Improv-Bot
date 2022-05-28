@@ -25,6 +25,7 @@
         Instructions 
     </button>
     
+    
     <!-- Modal -->
     <div class="modal fade text-secondary" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -76,7 +77,7 @@
             <div class="row">
                 <div class="card col">
                     <div class="card-body mx-auto">
-                        <div class="slidecontainer" style="margin-left:60px">
+                        <div class="slidecontainer">
                             <div class="card-header text-primary" style="width: 16rem;"> Tempo </div>
                             <input id="tempo" type="range" min="50" max="300" value="120" class="slider">
                             <div id="tempo-text" class="card-text text-center" style="width: 16rem;">
@@ -108,10 +109,10 @@
             </div>
 
             <div class="row">
-                <div class="card col">
+                <div class="card col mx-auto">
                     <div class="card-body mx-auto">
-                        <div class="card-header text-primary" style="width: 16rem;"> Outness </div>
-                        <select class="form-select" aria-label="Default">
+                        <div class="card-header text-primary text-center mx-auto" style="width: 16rem;"> Outness </div>
+                        <select class="form-select text-center" id="outness" aria-label="Default">
                             <option selected>Solely Diatonic (Least Out)</option>
                             <option value="1">You Heard Giant Steps Once (2nd Least)</option>
                             <option value="2">Average Jazz Musician (Medium)</option>
