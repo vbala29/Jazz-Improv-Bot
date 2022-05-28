@@ -27,6 +27,17 @@ const DEBUG = 0;
  * @returns 1 if no error in chord creation, -1 if there is an error
  */
 async function generateChartObject(sections, section_chord_map, info, username) {
+   var user = await User.findOne({'username': username});
+
+   //Checks if chart with duplicate name already existed. 
+   for (c of user.charts) {
+      let serialized_chart = c;
+      let chart = s11.chart.load(JSON.parse(serialized_chart.chart));
+      if (chart.info.title === info.title) {
+         return -2; 
+      }
+   }
+
    try {
       var chart = s11.chart.create(sections, section_chord_map, info); 
       var json_chart = JSON.stringify(chart.serialize());
@@ -35,6 +46,7 @@ async function generateChartObject(sections, section_chord_map, info, username) 
             console.log("Error in Query /improv/generateChart: " + err);
          } else {
             if (DEBUG) console.error("Result of Query: " + doc);
+
             await doc.charts.push({chart: json_chart, title: info.title});
             await doc.save();
          } 
@@ -157,7 +169,9 @@ router.post('/improv/generateChart', isLoggedIn, (req, res) => {
          //Determine appropriate HTTP response
          if (ret === 1) {
             res.sendStatus(201); //CREATION response code
-         } else {
+         } else if (ret === -2) {
+            res.sendStatus(400); //BAD Request
+         } else { //ret === -1
             res.sendStatus(406); //NOT ACCCEPTABLE response code
          }
       }

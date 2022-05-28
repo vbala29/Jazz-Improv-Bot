@@ -10,6 +10,27 @@ const locals = require('../app.locals.js')
 const User = require(locals.models + '/user');
 const passport = require('passport');
 const asyncHandler = require(locals.scripts + '/asyncHandler.js')
+const isLoggedIn = require(locals.scripts + '/isLoggedIn')
+
+
+router.delete('/deleteAccount', isLoggedIn, async (req, res) => {
+    await User.deleteOne({'username': req.user.username})
+
+    var exists = await User.exists({'username': req.user.username})
+
+    if (!exists) {
+        req.logout(); //Removes req.user property and clears session
+        req.flash('loggedOut', "You have succesfully deleted your account")
+        res.redirect('/login');
+    } else {
+        req.flash('error', "Unable to delete account, please try later")
+    }
+})
+
+router.get('/account', isLoggedIn, (req, res) => {
+    res.render('users/account', {username: req.user.username});
+    res.end();
+})
 
 router.get('/register', (req, res) => {
     res.render('users/register', {error: req.flash("error"), success: req.flash("success")});

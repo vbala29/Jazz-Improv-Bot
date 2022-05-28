@@ -85,6 +85,8 @@ function generateChartParams() {
             } else if (response.status === 201) {
                 alert("Chart succesfully created. Please select it from the dropdown on the next page to begin improvization!")
                 window.location.href = "/improv/selectChart" //redirect to /improv/selectChart
+            } else if (response.status === 400) {
+                alert('Chart with the same name already exists in your account, please rename chart or delete old chart from ImprovizationBot page')
             }
 
             callDeleteButtons();
