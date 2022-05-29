@@ -27,7 +27,7 @@ const DEBUG = 0;
  * @returns 1 if no error in chord creation, -1 if there is an error
  */
 async function generateChartObject(sections, section_chord_map, info, username) {
-   var user = await User.findOne({'username': username});
+   let user = await User.findOne({'username': username});
 
    //Checks if chart with duplicate name already existed. 
    for (c of user.charts) {
@@ -39,8 +39,8 @@ async function generateChartObject(sections, section_chord_map, info, username) 
    }
 
    try {
-      var chart = s11.chart.create(sections, section_chord_map, info); 
-      var json_chart = JSON.stringify(chart.serialize());
+      let chart = s11.chart.create(sections, section_chord_map, info); 
+      let json_chart = JSON.stringify(chart.serialize());
       await User.findOne({'username': username}).exec(async (err, doc) => {
          if (err) { 
             console.log("Error in Query /improv/generateChart: " + err);
@@ -87,20 +87,21 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
             } else {
                console.log("Calling AWS Lambda function for " + chartRequested.info.title);
                lambda(JSON.stringify(chartRequested.serialize()), req.body.rests,
-                  req.body.outness, req.body.substitutions).then(
+                  req.body.outness, req.body.substitutions, req.body.chords).then(
                      (data) => {
                      console.log("AWS Lambda Successful Invocation");
 
                      //Send improv data back to the front end FETCH API request so it can play the improv
                      if (data != null) {
-                        var payload = JSON.parse(data.Payload);
-                        var notes_and_durations = JSON.parse(payload.improv);
+                        let payload = JSON.parse(data.Payload);
+                        let notes_and_durations = JSON.parse(payload.improv);
 
                         res.setHeader('Content-Type', 'application/json');
                         res.end(JSON.stringify(
                                  {
                                     improv: notes_and_durations,
-                                    chart: chartRequested.content['A']
+                                    chart: chartRequested.content['A'],
+                                    chords: payload.chords
                                  }
                         ));
                      } else {
@@ -129,7 +130,7 @@ const lambda = async (chart, rests, outness, substitutions) => {
          'chart': chart,
          'rests': rests,
          'outness': outness,
-         'substitutions': substitutions
+         'substitutions': substitutions,
       })
    };
 
@@ -145,8 +146,8 @@ router.get('/improv/selectChart', isLoggedIn, (req, res) => {
          } else {
             if (DEBUG) console.log("Result of Query: " + doc);
 
-            var view_params = {};
-            var i = 0;
+            let view_params = {};
+            let i = 0;
             for (c of doc.charts) {
                let serialized_chart = c;
                let chart = s11.chart.load(JSON.parse(serialized_chart.chart));
@@ -163,7 +164,7 @@ router.get('/improv/selectChart', isLoggedIn, (req, res) => {
 })
 
 router.post('/improv/generateChart', isLoggedIn, (req, res) => {
-   var body = req.body; //Already JSON parsed by express json middleware
+   let body = req.body; //Already JSON parsed by express json middleware
    generateChartObject(body.sections, body.content, body.info, req.user.username).then(
       ret => {
          //Determine appropriate HTTP response
@@ -186,13 +187,13 @@ router.get('/improv', isLoggedIn, (req, res) => {
 })
 
 router.delete('/improv/deleteChart', isLoggedIn, (req, res) => {
-   var body = req.body; //Plain text
+   let body = req.body; //Plain text
    User.findOne({'username': req.user.username}).exec((err, doc) => {
       if (err) {
          console.error("Unable to find user to deleteChart. Username: " + req.user.username);
       } else {
 
-         var index = 0;
+         let index = 0;
          for (c of doc.charts) {
             let serialized_chart = c;
             let chart = s11.chart.load(JSON.parse(serialized_chart.chart));

@@ -9,13 +9,18 @@ const improv = require('sharp11-improv')
 
 
 exports.handler = async (event, context) => {
-    var chart = s11.chart.load(JSON.parse(event.chart)); //Load serialized chart from request
+    let chart = s11.chart.load(JSON.parse(event.chart)); //Load serialized chart from request
     console.log("Lambda invoked for chart titled: " + chart.info.title)
-    var imp = improv.overChart(chart, {cadence: false});
-    var notes = []
+    let imp = improv.overChart(chart, {cadence: false});
+    let notes = []
+    let chords = []
     for (obj of imp.data) {
         notes.push(obj.notes);
+        chords.push(obj.chord)
     }
 
-    return {"improv": JSON.stringify(notes)}
+    return {
+            "improv": JSON.stringify(notes),
+            "chords": JSON.stringify(chords)
+        }
 };

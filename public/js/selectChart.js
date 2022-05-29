@@ -5,39 +5,70 @@
  */
 
 //List of chords entered by the user
-var chartList = document.getElementsByClassName("select-button"); //Live List!
-var chartDeleteList = document.getElementsByClassName("delete-button"); //Live List!
+let chartList = document.getElementsByClassName("select-button"); //Live List!
+let chartDeleteList = document.getElementsByClassName("delete-button"); //Live List!
 
 
 
-var tempo = document.getElementById('tempo'); 
-var tempo_text = document.getElementById('tempo-text')
+let tempo = document.getElementById('tempo'); 
+let tempo_text = document.getElementById('tempo-text')
 //Update the slider value text box each time the slider changes
 tempo_text.innerHTML = tempo.value.toString() + " bpm";
 tempo.oninput = () => tempo_text.innerHTML = tempo.value.toString() + " bpm";
 
-var rests = document.getElementById('rests'); 
-var rests_text = document.getElementById('rests-text')
+let rests = document.getElementById('rests'); 
+let rests_text = document.getElementById('rests-text')
 //Update the slider value text box each time the slider changes
 rests_text.innerHTML = rests.value.toString() + " % chance of rest each note";
 rests.oninput = () => rests_text.innerHTML = rests.value.toString() + "% chance of rest each note";
 
 
 
-var substitutions = document.getElementById('substitutions'); 
-var substitutions_text = document.getElementById('substitutions-text')
+let substitutions = document.getElementById('substitutions'); 
+let substitutions_text = document.getElementById('substitutions-text')
 //Update the slider value text box each time the slider changes
 substitutions_text.innerHTML = substitutions.value.toString() + "% chance of substituion each chord";
 substitutions.oninput = () => substitutions_text.innerHTML = substitutions.value.toString() + "% chance of substitution each chord";
 
 
 
-var context = new AudioContext();
+let context = new AudioContext();
 
 let running = false;
 let interrupt = false;
 
-var Voice = (function(context) {
+
+let ChordVoice = (function(context) {
+    function ChordVoice(frequency){
+      this.frequency = frequency;
+    };
+
+    ChordVoice.oscillators = []; //List of currently active oscillators
+
+    ChordVoice.prototype.start = function() {
+      /* VCO */
+      let vco = context.createOscillator();
+      vco.type = "sine"
+      vco.frequency.value = this.frequency;
+
+      /* VCA */
+      let vca = context.createGain();
+      vca.gain.value = 0.1;
+
+      /* connections */
+      vco.connect(vca);
+      vca.connect(context.destination);
+
+      vco.start(0);
+
+      ChordVoice.oscillators.push(vco); //Push to list of currently active oscillators
+    };
+
+    return ChordVoice;
+})(context);
+
+
+let Voice = (function(context) {
     function Voice(frequency){
       this.frequency = frequency;
     };
@@ -46,13 +77,13 @@ var Voice = (function(context) {
 
     Voice.prototype.start = function() {
       /* VCO */
-      var vco = context.createOscillator();
+      let vco = context.createOscillator();
       vco.type = "sine"
       vco.frequency.value = this.frequency;
 
       /* VCA */
-      var vca = context.createGain();
-      vca.gain.value = 0.3;
+      let vca = context.createGain();
+      vca.gain.value = 0.4;
 
       /* connections */
       vco.connect(vca);
@@ -71,6 +102,28 @@ var Voice = (function(context) {
  * Stops all currently active oscillators
  */
 function deleteOscillators() {
+    Voice.oscillators.forEach(function(oscillator, _) {
+        oscillator.stop();
+    })
+
+    ChordVoice.oscillators.forEach(function(oscillator, _) {
+        oscillator.stop();
+    })
+}
+
+/**
+ * Stops all currently active chord oscillators
+ */
+ function deleteChordOscillators() {
+    ChordVoice.oscillators.forEach(function(oscillator, _) {
+        oscillator.stop();
+    })
+}
+
+/**
+ * Stops all currently active single note improv oscillators
+ */
+ function deleteNoteOscillators() {
     Voice.oscillators.forEach(function(oscillator, _) {
         oscillator.stop();
     })
@@ -237,20 +290,23 @@ function createNoteTable() {
     return noteFreq;
 }
 
-var noteFreq = createNoteTable();
+let noteFreq = createNoteTable();
 
 function generateCallbacks() {
-    for (var i = 0; i < chartList.length; i++) {
+    for (let i = 0; i < chartList.length; i++) {
         chartList[i].addEventListener('click', lambdaCall);
     }
     
-    for (var i = 0; i < chartDeleteList.length; i++) {
+    for (let i = 0; i < chartDeleteList.length; i++) {
         chartDeleteList[i].addEventListener('click', deleteChart);
     }
 }
 
 
 function deleteChart() {
+    if (running) interrupt = true; //Interrupt any current audio process
+    cleanUpDisplayAndAudio(); //Also deletes any current audio oscilaltors
+
     fetch('http://localhost:3000/improv/deleteChart', {
         method: 'DELETE',
         mode: 'cors',
@@ -286,17 +342,19 @@ function lambdaCall() {
         "<span class=\"visually-hidden\">Loading...</span> </div>" + 
         "</div>";
 
-    var outness = document.getElementById('outness');
-    var outness_string = outness.options[outness.selectedIndex].text;
-    var tempo_string = document.getElementById('tempo').value;
-    var rests_string = document.getElementById('rests').value;
-    var substitutions_string = document.getElementById('substitutions').value
-    var improv_params = {
+    let outness = document.getElementById('outness');
+    let outness_string = outness.options[outness.selectedIndex].text;
+    let tempo_string = document.getElementById('tempo').value;
+    let rests_string = document.getElementById('rests').value;
+    let substitutions_string = document.getElementById('substitutions').value
+    let chords_boolean = document.getElementById('chords').checked
+    let improv_params = {
         title: this.id,
         outness: outness_string,
         tempo: tempo_string,
         rests: rests_string,
-        substitutions: substitutions_string
+        substitutions: substitutions_string,
+        chords: chords_boolean
     }
 
     fetch('http://localhost:3000/improv/improviseOnChart', {
@@ -318,7 +376,7 @@ function lambdaCall() {
         document.getElementsByClassName('spinner')[0].innerHTML = '';
 
         displayChart(data.chart);
-        audioForImproization(data.improv);
+        audioForImproization(data.improv, JSON.parse(data.chords));
     }).catch(err => {
         alert("ERROR: Front End Improvization Processing Failed");
         console.log("ERROR: Front End Improvization Processing Failed. \nError: " + err)
@@ -326,11 +384,11 @@ function lambdaCall() {
 }
 
 function displayChart(chart) {
-    var chart_section = document.getElementsByClassName('chart-div')[0];
+    let chart_section = document.getElementsByClassName('chart-div')[0];
     
-    //var index is used in id field so that audioForImproization() can highlight the chords
+    //let index is used in id field so that audioForImproization() can highlight the chords
     //as it plays over them.
-    var index = 0;
+    let index = 0;
     for (pair of chart) {
         chart_section.innerHTML += "<div id=\"" + index + "\" class=\"badge bg-primary text-wrap\" style=\"width: 6rem;\">" +
         "Chord: " + pair.chord.name + " Beats: " + pair.duration.beats + "</div>";
@@ -350,29 +408,38 @@ function cleanUpDisplayAndAudio() {
     deleteOscillators();
 }
 
-async function audioForImproization(improv_array) {
+async function audioForImproization(improv_array, chords_object_array) {
     running = true;
 
     try {
         //Each array in this array is a array represents one chord in the chart
-        console.log(improv_array)
-        for (var i = 0; i < improv_array.length; i++) {
+        for (let i = 0; i < improv_array.length; i++) {
             //Highlight the chord being played over
-            var chord_icon = document.getElementById(i.toString())
+            let chord_icon = document.getElementById(i.toString())
             if (chord_icon === null) {
                 console.error("Null chord icon for chord at index " + i);
             } else {
                 chord_icon.classList.remove('bg-primary')
                 chord_icon.classList.add('bg-warning')
             }
-        
-            let chord = improv_array[i];
-            //Each array in this array, represents notes played over a beat.
-            for (var j = 0; j < chord.length; j++) {
 
-                let beat = chord[j];
+            //Play audio for current chord
+            let chord_tones = chords_object_array[i].chord;
+            for (note of chord_tones) {
+                let fullname = note.fullName;
+                let name_len = note.fullName.length;
+                let freq = noteFreq[4][fullname];
+                new ChordVoice(freq).start();
+            }
+            
+        
+            let one_chord_improv = improv_array[i];
+            //Each array in this array, represents notes played over a beat.
+            for (let j = 0; j < one_chord_improv.length; j++) {
+
+                let beat_improv = one_chord_improv[j];
                 let duration = 0;
-                switch(beat.length) {
+                switch(beat_improv.length) {
                     case 1:
                         duration = 0.6;
                         break;
@@ -390,7 +457,7 @@ async function audioForImproization(improv_array) {
                         return;
                 }
                 //The elements of the beat array are notes with equal duration-> null indicates a "rest"
-                for (var n = 0; n < beat.length; n++) {
+                for (let n = 0; n < beat_improv.length; n++) {
 
                     //async function is halted by the interrupt flag.
                     if (interrupt) {
@@ -400,7 +467,7 @@ async function audioForImproization(improv_array) {
                         return;
                     }
 
-                    let note = beat[n];
+                    let note = beat_improv[n];
                     if (note !== null) {
                         let fullname = note.fullName;
                         let name_len = fullname.length;
@@ -423,10 +490,12 @@ async function audioForImproization(improv_array) {
                         }
                     }
                     await sleep(duration*1000); //Let the note play before going on to play next note
-                    deleteOscillators(); //Stop the note playing.
+                    deleteNoteOscillators(); //Stop the note playing.
                 }
 
             }
+
+            deleteChordOscillators(); //Stop the chord being played.
 
             //Unhighlight chord now that it is done being played over
             chord_icon.classList.remove('bg-warning')
