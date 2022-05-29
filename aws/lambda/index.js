@@ -14,11 +14,12 @@ exports.handler = async (event, context) => {
     let imp = improv.overChart(chart, {cadence: false});
     let notes = []
     let chords = []
-    for (obj of imp.data) {
-        notes.push(obj.notes);
-        chords.push(obj.chord)
+    if (event.chords) {
+        for (obj of imp.data) {
+            notes.push(obj.notes);
+            chords.push(obj.chord)
+        }
     }
-
     return {
             "improv": JSON.stringify(notes),
             "chords": JSON.stringify(chords)

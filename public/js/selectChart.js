@@ -325,6 +325,9 @@ function deleteChart() {
     location.reload();
 }
 
+/**
+ * Makes the call to the AWS lambda function that generates the improv
+ */
 function lambdaCall() {
     //Stop running process that will generate audio oscillators
     if (running) {
@@ -376,7 +379,7 @@ function lambdaCall() {
         document.getElementsByClassName('spinner')[0].innerHTML = '';
 
         displayChart(data.chart);
-        audioForImproization(data.improv, JSON.parse(data.chords));
+        audioForImproization(data.improv, JSON.parse(data.chords), chords_boolean);
     }).catch(err => {
         alert("ERROR: Front End Improvization Processing Failed");
         console.log("ERROR: Front End Improvization Processing Failed. \nError: " + err)
@@ -408,7 +411,7 @@ function cleanUpDisplayAndAudio() {
     deleteOscillators();
 }
 
-async function audioForImproization(improv_array, chords_object_array) {
+async function audioForImproization(improv_array, chords_object_array, chords_boolean) {
     running = true;
 
     try {
@@ -423,16 +426,18 @@ async function audioForImproization(improv_array, chords_object_array) {
                 chord_icon.classList.add('bg-warning')
             }
 
-            //Play audio for current chord
-            let chord_tones = chords_object_array[i].chord;
-            for (note of chord_tones) {
-                let fullname = note.fullName;
-                let name_len = note.fullName.length;
-                let freq = noteFreq[4][fullname];
-                new ChordVoice(freq).start();
+            //Play audio for current chord 
+            if (chords_boolean) {
+                let chord_tones = chords_object_array[i].chord;
+                for (note of chord_tones) {
+                    let fullname = note.fullName;
+                    let name_len = note.fullName.length;
+                    let freq = noteFreq[4][fullname];
+                    new ChordVoice(freq).start();
+                }
             }
             
-        
+            
             let one_chord_improv = improv_array[i];
             //Each array in this array, represents notes played over a beat.
             for (let j = 0; j < one_chord_improv.length; j++) {
@@ -495,7 +500,7 @@ async function audioForImproization(improv_array, chords_object_array) {
 
             }
 
-            deleteChordOscillators(); //Stop the chord being played.
+            if (chords_boolean) deleteChordOscillators(); //Stop the chord being played.
 
             //Unhighlight chord now that it is done being played over
             chord_icon.classList.remove('bg-warning')
