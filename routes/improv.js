@@ -86,7 +86,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                res.sendStatus(400).end(); //BAD REQUEST 400 HTTP STATUS
             } else {
                console.log("Calling AWS Lambda function for " + chartRequested.info.title);
-               console.log(chartRequested.content)
+
                lambda(JSON.stringify(chartRequested.serialize()), req.body.rests,
                   req.body.outness, req.body.substitutions, req.body.chords, req.body.tempo).then(
                      (data) => {
@@ -95,6 +95,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                      //Send improv data back to the front end FETCH API request so it can play the improv
                      if (data != null) {
                         let payload = JSON.parse(data.Payload);
+                        console.log(payload)
                         let notes_and_durations = JSON.parse(payload.improv);
 
                         res.setHeader('Content-Type', 'application/json');

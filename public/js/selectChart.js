@@ -414,7 +414,6 @@ function cleanUpDisplayAndAudio() {
 
 async function audioForImprovization(improv_array, chords_object_array, chords_boolean, tempo) {
     running = true;
-    console.log(improv_array)
 
     try {
         //Each array in this array is a array represents one chord in the chart
