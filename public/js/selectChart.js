@@ -379,13 +379,11 @@ function lambdaCall() {
         //Stop displaying loading icon
         document.getElementsByClassName('spinner')[0].innerHTML = '';
 
-        console.log(data);
-
         displayChart(data.chart);
-        audioForImprovization(data.improv, JSON.parse(data.chords), chords_boolean);
+        audioForImprovization(data.improv, JSON.parse(data.chords), chords_boolean, data.tempo);
     }).catch(err => {
         alert("ERROR: Front End Improvization Processing Failed");
-        console.log("ERROR: Front End Improvization Processing Failed. \nError: " + err)
+        console.error("ERROR: Front End Improvization Processing Failed. \nError: " + err)
     });
 }
 
@@ -414,7 +412,7 @@ function cleanUpDisplayAndAudio() {
     deleteOscillators();
 }
 
-async function audioForImprovization(improv_array, chords_object_array, chords_boolean) {
+async function audioForImprovization(improv_array, chords_object_array, chords_boolean, tempo) {
     running = true;
 
     try {
@@ -449,16 +447,16 @@ async function audioForImprovization(improv_array, chords_object_array, chords_b
                 let duration = 0;
                 switch(beat_improv.length) {
                     case 1:
-                        duration = 0.6;
+                        duration = 60/tempo;
                         break;
                     case 2:
-                        duration = 0.3;
+                        duration = (60/tempo)/2;
                         break;
                     case 3:
-                        duration = 0.2;
+                        duration = (60/tempo)/3;
                         break;
                     case 4:
-                        duration = 0.15;
+                        duration = (60/tempo)/4;
                         break;
                     default:
                         console.error("Invalid duration # of notes in beat: " + beat.length);

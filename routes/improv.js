@@ -90,19 +90,19 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                   req.body.outness, req.body.substitutions, req.body.chords).then(
                      (data) => {
                      console.log("AWS Lambda Successful Invocation");
-                     console.log(data)
 
                      //Send improv data back to the front end FETCH API request so it can play the improv
                      if (data != null) {
                         let payload = JSON.parse(data.Payload);
                         let notes_and_durations = JSON.parse(payload.improv);
-
+                        
                         res.setHeader('Content-Type', 'application/json');
                         res.end(JSON.stringify(
                                  {
                                     improv: notes_and_durations,
                                     chart: chartRequested.content['A'],
-                                    chords: payload.chords
+                                    chords: payload.chords,
+                                    tempo: req.body.tempo
                                  }
                         ));
                      } else {

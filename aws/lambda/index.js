@@ -11,7 +11,7 @@ const improv = require('sharp11-improv')
 exports.handler = async (event, context) => {
     let chart = s11.chart.load(JSON.parse(event.chart)); //Load serialized chart from request
     console.log("Lambda invoked for chart titled: " + chart.info.title)
-    console.log(event)
+
     let imp = improv.overChart(chart, {cadence: false});
     let notes = []
     let chords = []
