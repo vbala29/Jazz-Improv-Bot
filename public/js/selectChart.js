@@ -360,6 +360,7 @@ function lambdaCall() {
         chords: chords_boolean
     }
 
+
     fetch('http://localhost:3000/improv/improviseOnChart', {
         method: 'POST',
         mode: 'cors',
@@ -378,8 +379,10 @@ function lambdaCall() {
         //Stop displaying loading icon
         document.getElementsByClassName('spinner')[0].innerHTML = '';
 
+        console.log(data);
+
         displayChart(data.chart);
-        audioForImproization(data.improv, JSON.parse(data.chords), chords_boolean);
+        audioForImprovization(data.improv, JSON.parse(data.chords), chords_boolean);
     }).catch(err => {
         alert("ERROR: Front End Improvization Processing Failed");
         console.log("ERROR: Front End Improvization Processing Failed. \nError: " + err)
@@ -411,7 +414,7 @@ function cleanUpDisplayAndAudio() {
     deleteOscillators();
 }
 
-async function audioForImproization(improv_array, chords_object_array, chords_boolean) {
+async function audioForImprovization(improv_array, chords_object_array, chords_boolean) {
     running = true;
 
     try {
@@ -468,7 +471,6 @@ async function audioForImproization(improv_array, chords_object_array, chords_bo
                     if (interrupt) {
                         interrupt = false;
                         running = false;
-                        console.log("Got interrupted")
                         return;
                     }
 
@@ -514,7 +516,7 @@ async function audioForImproization(improv_array, chords_object_array, chords_bo
     } catch (err) {
         running = false;
         interrupt = false;
-        console.log("Error in audioForImprovization(). Error: " + err);
+        console.log("Error in audioForImprovization(). Error: " + err.stack);
     }
 }
 

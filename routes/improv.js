@@ -90,6 +90,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                   req.body.outness, req.body.substitutions, req.body.chords).then(
                      (data) => {
                      console.log("AWS Lambda Successful Invocation");
+                     console.log(data)
 
                      //Send improv data back to the front end FETCH API request so it can play the improv
                      if (data != null) {
@@ -117,7 +118,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
    })();
 })
 
-const lambda = async (chart, rests, outness, substitutions) => {
+const lambda = async (chart, rests, outness, substitutions, chords_boolean) => {
    AWS.config.update({
       accessKeyId: process.env.accessKeyId, 
       secretAccessKey: process.env.secretAccessKey,
@@ -131,6 +132,7 @@ const lambda = async (chart, rests, outness, substitutions) => {
          'rests': rests,
          'outness': outness,
          'substitutions': substitutions,
+         'chords': chords_boolean
       })
    };
 
