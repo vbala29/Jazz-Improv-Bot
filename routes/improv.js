@@ -86,8 +86,9 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                res.sendStatus(400).end(); //BAD REQUEST 400 HTTP STATUS
             } else {
                console.log("Calling AWS Lambda function for " + chartRequested.info.title);
+               console.log(chartRequested.content)
                lambda(JSON.stringify(chartRequested.serialize()), req.body.rests,
-                  req.body.outness, req.body.substitutions, req.body.chords).then(
+                  req.body.outness, req.body.substitutions, req.body.chords, req.body.tempo).then(
                      (data) => {
                      console.log("AWS Lambda Successful Invocation");
 
@@ -95,7 +96,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                      if (data != null) {
                         let payload = JSON.parse(data.Payload);
                         let notes_and_durations = JSON.parse(payload.improv);
-                        
+
                         res.setHeader('Content-Type', 'application/json');
                         res.end(JSON.stringify(
                                  {
@@ -118,7 +119,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
    })();
 })
 
-const lambda = async (chart, rests, outness, substitutions, chords_boolean) => {
+const lambda = async (chart, rests, outness, substitutions, chords_boolean, tempo) => {
    AWS.config.update({
       accessKeyId: process.env.accessKeyId, 
       secretAccessKey: process.env.secretAccessKey,
@@ -132,7 +133,8 @@ const lambda = async (chart, rests, outness, substitutions, chords_boolean) => {
          'rests': rests,
          'outness': outness,
          'substitutions': substitutions,
-         'chords': chords_boolean
+         'chords': chords_boolean,
+         'tempo': tempo
       })
    };
 
