@@ -180,24 +180,24 @@ class Improv {
         
         //Depending on tempo, make likeliness of different note durations difference
         if (tempo < 75) {
+            this.quarterThreshold = 0.05; //5%
+            this.eightThreshold = 0.40;  //35%
+            this.tripletThreshold = 0.70;  //30% 
+            this.sixteenthThreshold = 1.0; //30%
+        } else if (tempo < 150 && tempo >= 75) {
             this.quarterThreshold = 0.20; //20%
-            this.eightThreshold = 0.55;  //35%
-            this.tripletThreshold = 0.75;  //20% 
-            this.sixteenthThreshold = 1.0; //25%
-        } else if (tempo < 150) {
-            this.quarterThreshold = 0.25; //25%
-            this.eightThreshold = 0.60;  //35%
+            this.eightThreshold = 0.60;  //40%
             this.tripletThreshold = 0.80;  //20% 
             this.sixteenthThreshold = 1.0; //20%
-        } else if (tempo < 220) {
-            this.quarterThreshold = 0.30; //30%
-            this.eightThreshold = 0.70;  //40%
+        } else if (tempo < 220 && tempo >= 150) {
+            this.quarterThreshold = 0.20; //20%
+            this.eightThreshold = 0.70;  //50%
             this.tripletThreshold = 0.90;  //20% 
             this.sixteenthThreshold = 1.0; //10%
-        } else if (tempo < 220) {
-            this.quarterThreshold = 0.40; //40%
-            this.eightThreshold = 0.80;  //40%
-            this.tripletThreshold = 1.0;  //20% 
+        } else if (tempo < 300 && tempo >= 220) {
+            this.quarterThreshold = 0.30; //30%
+            this.eightThreshold = 1.0;  //70%
+            this.tripletThreshold = 1.01;  //0%
             this.sixteenthThreshold = 1.01; //0%
         }
 
@@ -250,21 +250,23 @@ class Improv {
 
         let improv_over_chord = []; //Array of beat arrays (which contain note arrays) representing improv
         let starting_note = this.#chooseStartingNote(chord)
-        let previousNote = null; //Null if no note has been played over the chord as yet
+        let firstNote = true; //True if first note hasn't been played yet.
+        let previousNote = null; 
 
         for (let i = 0; i < num_beats; i++) {
             let noteType = this.#determineNoteType();
             let improv_over_beat = [];
 
             while(noteType > 0) {
-               let current_note = this.#generateNote(previousNote, chord);
+               let current_note = this.#generateNote(previousNote, chord, firstNote);
 
                 if (current_note === 1) {
                     improv_over_beat.push(starting_note);
-                    previousNote = starting_note;
+                    if (starting_note != null) previousNote = starting_note;
+                    firstNote = false;
                 } else {
                     improv_over_beat.push(current_note);
-                    previousNote = current_note;
+                    if (current_note != null) previousNote = current_note;
                 }
 
                 noteType--;
@@ -276,10 +278,10 @@ class Improv {
         return {notes: improv_over_chord, chord: chord};
     }
 
-    #generateNote(previousNote, chord) {
+    #generateNote(previousNote, chord, firstNote) {
         if (Math.random() <  this.rests) {
             return null; //Signifies a rest
-        } else if (previousNote == null) {
+        } else if (firstNote) {
             //If not a rest and no previous note, must play starting note
             return 1;
         }
@@ -292,6 +294,7 @@ class Improv {
             //Jumps ONLY transistion to chord tones!
 
             let chord_tones = chord.chord;
+            //previous note is always non null if first_note is false
             let note_octave = Math.round(this.#guassian_rand(5, 1, previousNote.octave - 1, previousNote.octave + 1)); //Center at previous octave
               
             let note = chord_tones[Math.round(Math.random() * (chord_tones.length - 1))]; //Choose a random chord tone

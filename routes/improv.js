@@ -137,6 +137,7 @@ const lambda = async (chart, rests, outness, substitutions, chords_boolean, temp
          'chords': chords_boolean,
          'tempo': tempo
       })
+
    };
 
    const lambda = new AWS.Lambda();
