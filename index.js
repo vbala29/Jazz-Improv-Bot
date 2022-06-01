@@ -86,7 +86,7 @@ app.use('/', userRoutes);
 app.use('/', improvRoutes);
 
 app.get('/', (req, res) => {
-    res.render('home');
+    res.render('home', {error: req.flash("error"), success: req.flash("success")});
 });
 
 app.get('/about', (req, res) => {

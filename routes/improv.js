@@ -171,6 +171,8 @@ router.get('/improv/selectChart', isLoggedIn, (req, res) => {
 
 router.post('/improv/generateChart', isLoggedIn, (req, res) => {
    let body = req.body; //Already JSON parsed by express json middleware
+   console.log(body.sections)
+   console.log(body.content)
    generateChartObject(body.sections, body.content, body.info, req.user.username).then(
       ret => {
          //Determine appropriate HTTP response
@@ -179,7 +181,7 @@ router.post('/improv/generateChart', isLoggedIn, (req, res) => {
          } else if (ret === -2) {
             res.sendStatus(400); //BAD Request
          } else { //ret === -1
-            res.sendStatus(406); //NOT ACCCEPTABLE response code
+            res.sendStatus(406); //NOT ACCEPTABLE response code
          }
       }
    ).catch(
