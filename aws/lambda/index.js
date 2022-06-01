@@ -209,18 +209,20 @@ class Improv {
                 this.outness = 0.10;
                 break;
             case "Average Jazz Musician (Medium)":
-                this.outness = 0.15;
-                break;
-            case "You are John Coltrane (2nd to Most Out)":
                 this.outness = 0.20;
                 break;
-            case "So Out They Might Just Be Playing The Wrong Song (Most Out)":
-                this.outness = 0.25;
+            case "You are John Coltrane (2nd to Most Out)":
+                this.outness = 0.35;
+                break;
+            case "So Out They Might Just Be Playing the Wrong Song (Most Out)":
+                this.outness = 0.5;
                 break;
             default:
-                this.outness = 0.15; //Average Jazz Musician Case
+                this.outness = 0.20; //Average Jazz Musician Case
                 break;
         }
+
+        console.log(this.outness + ", outness!, string: ," + outness + ",")
     }
 
     /**
@@ -267,6 +269,17 @@ class Improv {
 
         } else {
             scale = scale_arr[0]; //If not substitution, use the most frequently used scale 
+        }
+
+        if (Math.random() < outness) {
+            //Do a diminished chord substituion only if we have a dominant chord.
+            //The chord Bb7 would become Bdim7 (aka Abdim7/Ddim7/Fdim7)
+            if ((chord.name.includes('7')) && !(chord.name.includes('m')) && !(chord.name.includes('M')) && !(chord.name.includes('sus')) && !(chord.name.includes('dim'))) {
+                let new_root_note = chord.root.shift(1); //Shift up by one halfset
+                //Created the diminshed chord substitution
+                let new_chord = s11.chord.create(new_root_note.name + "dim7", 4); //Octave here doesn't really matter, it will get reassigned in generateNote();
+                scale = new_chord.scale() //Returns the first element in array that would've been returned by scales()
+            }
         }
 
         //If this is not the first chord in the chart, then don't use the starting_note found below, but rather perform voice leading.
