@@ -16,7 +16,7 @@
     <div class="container-fluid py-1">
       <h1 class="display-6 fw-bold">Chart Maker</h1>
       <p class="col-md-8 fs-7">
-          Information about the chart maker.
+          Make Compositions for the Bot to Improvize Over
       </p>
       
 
@@ -32,8 +32,17 @@
                 <a href="/improv/selectChart">
                     <button class="btn btn-secondary" style="margin-left: 20px;">Select Prior Chart</button>
                 </a>
-            </div>             
-      </div>
+            </div>         
+        </div>
+        <div class="row text-info" style="margin-top: 10px">
+          <p>  
+            <b>Valid Chord Qualities:</b>  <br>
+            <i> Minor:</i> m7, m6, m7add9, m7add13, m7add9add13, mM7 <br>
+            <i> Major/Dominant:</i> 7, M, M79, 7b9, 7b13, 6, M7#11, M7add13, 7#11, 13b9 <br>
+            <i>Half/Fully Diminished:</i> m7b5, dim7, dim <br>
+            <i>Augmented/Suspended:</i> aug, aug7, sus, sus7
+          </p>
+        </div>
 
         <!-- Modal -->
         <div class="modal fade text-secondary" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -44,7 +53,27 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                Information goes here
+                    1. <b>Introduction:</b> In the chart maker, you will be able to give a title to your composition, and then build it
+                    by adding chords to your chart. Once you are done adding chords, you can click <i> "Submit Your Chart" </i> to save
+                    the chart to your account, and access it on the <a href="/improv/selectChart">Improvization Bot</a> page. 
+
+                    <br> <br>   
+
+                    2. <b>How to Abbreviate Chords:</b> In order to use the chart maker, you must write chord abbreviations, just as seen on standard jazz sheet music.
+                    Each abbreviation has two parts: {Root Note} + {Chord Quality}. The root note must be one of the 12 notes in the chromatic scale (e.g. A, Ab, E, Eb, F#, etc).
+                    Note that you may not use double accidentals like F## or Bbb, but instead should represent these as G and A respectively. The valid chord qualities accepted by the bot
+                    are shown on the page for your reference.
+
+                    <br><br> Here are some of examples of chords you can use: C, CM7, C7, Cm7, Abm7, Dm7b5, Ddim7, Ebsus7, Gm7add9add13, F#mM7
+
+                    <br> <br>
+                    
+                    3. <b>How to Set Chord Durations:</b> When adding a chord, you must set its duration in "beats." For example, 
+                    if we are in 4/4 time signature, and want a C major chord for 1 measure, we would input "4" as the value for the duration. 
+
+                    <br> <br>
+                    4. <b>Quickstart:</b> A famous jazz standard entitled  <i>All The Things You Are</i> by Jerome Kern has been presaved to your account, and can be accesed on the <a href="/improv/selectChart">Improvization Bot</a> page. 
+          
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
