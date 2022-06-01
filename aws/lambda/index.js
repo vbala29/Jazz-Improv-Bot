@@ -4,6 +4,7 @@
  * Github Repository: https://github.com/vbala29/Jazz-Improv-Bot#readme
  */
 
+const { IoT1ClickProjects } = require('aws-sdk');
 const s11 = require('sharp11');
 
 /**
@@ -173,7 +174,7 @@ let noteFreq = createNoteTable();
 class Improv {
     constructor(substitutions, outness, rests, chart, tempo) {
         this.substitutions = substitutions/100; //Chance of a chord being substituted diatonically or with a tritone sub
-        this.rests = rests/100; //Chance of a particular note being a rest
+        this.rests = (rests/100); //Chance of a particular note being a rest
         this.chart = chart; //The chart to improvise over
         this.jumps = 0.3; //Chance of jumping rather than going up or down in scale
 
@@ -182,8 +183,8 @@ class Improv {
         if (tempo < 75) {
             this.quarterThreshold = 0.05; //5%
             this.eightThreshold = 0.40;  //35%
-            this.tripletThreshold = 0.70;  //30% 
-            this.sixteenthThreshold = 1.0; //30%
+            this.tripletThreshold = 0.60;  //30% 
+            this.sixteenthThreshold = 1.0; //40%
         } else if (tempo < 150 && tempo >= 75) {
             this.quarterThreshold = 0.20; //20%
             this.eightThreshold = 0.60;  //40%
@@ -194,7 +195,7 @@ class Improv {
             this.eightThreshold = 0.70;  //50%
             this.tripletThreshold = 0.90;  //20% 
             this.sixteenthThreshold = 1.0; //10%
-        } else if (tempo < 300 && tempo >= 220) {
+        } else if (tempo >= 220) {
             this.quarterThreshold = 0.30; //30%
             this.eightThreshold = 1.0;  //70%
             this.tripletThreshold = 1.01;  //0%
@@ -231,7 +232,7 @@ class Improv {
     improv() {
         let chart_content = this.chart.content['A'];
         let improv = []
-
+        console.log(chart_content)
         for (let obj of chart_content) {
             improv.push(this.#improvOverChord(obj.chord, obj.duration));
         }
@@ -259,14 +260,19 @@ class Improv {
 
             while(noteType > 0) {
                let current_note = this.#generateNote(previousNote, chord, firstNote);
+               console.log("Current note " + current_note)
 
                 if (current_note === 1) {
                     improv_over_beat.push(starting_note);
-                    if (starting_note != null) previousNote = starting_note;
+                    previousNote = starting_note;
                     firstNote = false;
-                } else {
+                } else if (current_note === 2){
+                    improv_over_beat.push(null);
+                } else if (current_note !== null && current_note !== undefined) {
                     improv_over_beat.push(current_note);
-                    if (current_note != null) previousNote = current_note;
+                    previousNote = current_note;
+                } else {
+                    throw new Error("Invaild note generated!")
                 }
 
                 noteType--;
@@ -279,8 +285,10 @@ class Improv {
     }
 
     #generateNote(previousNote, chord, firstNote) {
-        if (Math.random() <  this.rests) {
-            return null; //Signifies a rest
+        let rand = Math.random();
+        if (rand < this.rests) {
+            console.log("Rest : " + this.rests + ", rand: " + rand + " chord: " + chord.name);
+            return 2; //Signifies a rest
         } else if (firstNote) {
             //If not a rest and no previous note, must play starting note
             return 1;
@@ -295,7 +303,9 @@ class Improv {
 
             let chord_tones = chord.chord;
             //previous note is always non null if first_note is false
-            let note_octave = Math.round(this.#guassian_rand(5, 1, previousNote.octave - 1, previousNote.octave + 1)); //Center at previous octave
+            let note_octave = Math.round(this.#guassian_rand(previousNote.octave, 1, previousNote.octave - 1, previousNote.octave + 1)); //Center at previous octave
+            if (note_octave > 6) note_octave = 6;
+            if (note_octave < 3) note_octave = 3;
               
             let note = chord_tones[Math.round(Math.random() * (chord_tones.length - 1))]; //Choose a random chord tone
 
@@ -336,7 +346,7 @@ class Improv {
                             new_octave++;
                         }
 
-                        s11.note.create(scale[lower_index].name, new_octave); 
+                        return s11.note.create(scale[lower_index].name, new_octave); 
                     }
                     else {
                         let new_octave = previousNote.octave;
