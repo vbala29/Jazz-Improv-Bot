@@ -543,7 +543,7 @@ exports.handler = async (event, context) => {
         }
 };
 
-//Code used for testing improv outside of AWS Lambda
+//Code used for testing improvoutside of AWS Lambda
 // let chart = s11.chart.create(['A'], { A: [{ chord: 'C7', duration: 8 }, { chord: 'Fm7', duration: 4}]}, { foo: 1 });
 // console.log("Lambda invoked for chart titled: " + chart.info.title)
 // let improv = new Improv(50, "asdfasd", 10, chart, 125);

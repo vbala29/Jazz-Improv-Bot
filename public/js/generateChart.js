@@ -117,7 +117,7 @@ var addChord = () => {
     let misc = "aug|aug7|sus|sus7"
     let chords = "(|" + minor + "|" + major_and_dom + "|" + half_full_dim + "|" + misc + "|)?"; //Regeax express for possible chord types
 
-    let regex = new RegExp("\\b" + notes + accidentals + chords + "\\b", "g"); //Create the regex from the 3 regex expressions 
+    let regex = new RegExp("\b" + notes + accidentals + chords + "\b", "g"); //Create the regex from the 3 regex expressions 
 
     if(!regex.test(chordString)) {
         alert("Invlalid Chord Entered, Please See Instructions")

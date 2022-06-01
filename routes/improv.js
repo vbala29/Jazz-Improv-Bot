@@ -95,7 +95,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                      //Send improv data back to the front end FETCH API request so it can play the improv
                      if (data != null) {
                         let payload = JSON.parse(data.Payload);
-
+                        console.log(payload)
                         let notes_and_durations = JSON.parse(payload.improv);
 
                         res.setHeader('Content-Type', 'application/json');
