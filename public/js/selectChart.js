@@ -27,7 +27,7 @@ rests.oninput = () => rests_text.innerHTML = rests.value.toString() + "% chance 
 let substitutions = document.getElementById('substitutions'); 
 let substitutions_text = document.getElementById('substitutions-text')
 //Update the slider value text box each time the slider changes
-substitutions_text.innerHTML = substitutions.value.toString() + "% chance of diatonic substituion each chord";
+substitutions_text.innerHTML = substitutions.value.toString() + "% chance of diatonic substitution each chord";
 substitutions.oninput = () => substitutions_text.innerHTML = substitutions.value.toString() + "% chance of a diatonic substitution each chord";
 
 
