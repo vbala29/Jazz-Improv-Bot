@@ -4,7 +4,6 @@
  * Github Repository: https://github.com/vbala29/Jazz-Improv-Bot#readme
  */
 
-const { IoT1ClickProjects } = require('aws-sdk');
 const s11 = require('sharp11');
 
 /**
@@ -232,9 +231,9 @@ class Improv {
     improv() {
         let chart_content = this.chart.content['A'];
         let improv = []
-        console.log(chart_content)
+
         for (let obj of chart_content) {
-            improv.push(this.#improvOverChord(obj.chord, obj.duration));
+            improv.push(this.#improvOverChord(obj.chord, obj.duration, this.substitutions, this.outness));
         }
 
         return improv
@@ -246,22 +245,37 @@ class Improv {
      * @param {*} duration 
      * @return an object consists of a "notes" and "chord" (a sharp11 chord object)
      */
-    #improvOverChord(chord, duration) {
+    #improvOverChord(chord, duration, substitutions, outness) {
         let num_beats = duration.beats;
 
         let improv_over_chord = []; //Array of beat arrays (which contain note arrays) representing improv
-        let starting_note = this.#chooseStartingNote(chord)
         let firstNote = true; //True if first note hasn't been played yet.
         let previousNote = null; 
+        let scale_arr = chord.scales() //Ordered in terms of most frequently used to least frequently used scales
+        let scale; //Sharp 11 Object
+        let tritone_sub = 0.4; //Probability of a tritone sub when a substitution is to take place
+
+
+        if (Math.random() < substitutions) {
+            scale = scale_arr[Math.round(Math.random() * (scale_arr.length - 1))] //Choose a random scale to do diatonic substitution.
+
+            if (Math.random() < tritone_sub) {
+                scale = scale.transposeDown('m3').transposeDown('m3'); //shifts the scale a tritone down
+                console.log(scale.scale + "," + chord)
+            }
+
+        } else {
+            scale = scale_arr[0]; //If not substitution, use the most frequently used scale 
+        }
+
+        let starting_note = this.#chooseStartingNote(scale) //Determine the starting based on chords tones interpolated from the scale
 
         for (let i = 0; i < num_beats; i++) {
             let noteType = this.#determineNoteType();
-            let improv_over_beat = [];
+            let improv_over_beat = []
 
             while(noteType > 0) {
-               let current_note = this.#generateNote(previousNote, chord, firstNote);
-               console.log("Current note " + current_note)
-
+               let current_note = this.#generateNote(previousNote, chord, firstNote, scale.scale); //Pass in the scale property of the scale Sharp 11 Object
                 if (current_note === 1) {
                     improv_over_beat.push(starting_note);
                     previousNote = starting_note;
@@ -272,8 +286,9 @@ class Improv {
                     improv_over_beat.push(current_note);
                     previousNote = current_note;
                 } else {
-                    throw new Error("Invaild note generated!")
+                    throw new Error("Invaild note generated! Note: " + current_note)
                 }
+                if (!firstNote) console.log("Prev: " + previousNote.name + ", curr: " + current_note.name)
 
                 noteType--;
             }
@@ -284,10 +299,17 @@ class Improv {
         return {notes: improv_over_chord, chord: chord};
     }
 
-    #generateNote(previousNote, chord, firstNote) {
+    /**
+     * Generates the next note/rest in an improvization over a chord.
+     * @param {*} previousNote that was played (not including rests)
+     * @param {*} chord to improvize over
+     * @param {*} firstNote boolean indicating if a note has been improvized over this chord yet or not
+     * @param {*} scale to generate improviation over
+     * @returns 
+     */
+    #generateNote(previousNote, chord, firstNote, scale) {
         let rand = Math.random();
         if (rand < this.rests) {
-            console.log("Rest : " + this.rests + ", rand: " + rand + " chord: " + chord.name);
             return 2; //Signifies a rest
         } else if (firstNote) {
             //If not a rest and no previous note, must play starting note
@@ -298,33 +320,59 @@ class Improv {
 
 
         if (Math.random() < this.jumps) {
+            console.log("jump")
             //If we need to jump instead of moving up/down by a scale tone
             //Jumps ONLY transistion to chord tones!
-
-            let chord_tones = chord.chord;
-            //previous note is always non null if first_note is false
-            let note_octave = Math.round(this.#guassian_rand(previousNote.octave, 1, previousNote.octave - 1, previousNote.octave + 1)); //Center at previous octave
+            let note_octave = Math.round(this.#guassian_rand(previousNote.octave, 1, previousNote.octave - 1, previousNote.octave + 1)); //Center at octave 5 
             if (note_octave > 6) note_octave = 6;
             if (note_octave < 3) note_octave = 3;
-              
-            let note = chord_tones[Math.round(Math.random() * (chord_tones.length - 1))]; //Choose a random chord tone
+            let chord = s11.chord.create(s11.chord.getPossibleChordNamesFromArray(scale)[0], note_octave);
 
-            //Make sure note isn't too high to exist on a piano e.g. you aren't returning F8
-            if (noteFreq[note_octave][note] === undefined) {
-                note_octave = 7;
+
+            //Try to find a random chord tone that is also in the scale.
+            let tries = 0;
+            while(tries < 10) {
+
+                let chord_tones = chord.chord //array of note objects in the chord.
+                let jump_note = chord_tones[Math.round(Math.random() * (chord_tones.length - 1))]; //selected note might be incorrect octave, so we have next line.
+                jump_note = s11.note.create(jump_note.name, note_octave) //Make jump_note in selected octave
+
+                if (jump_note in scale) return jump_note;
+                tries++;
             }
 
-            return s11.note.create(note.name, note_octave);
+            //If failed to find a chord tone in the scale, just return the first note in the scale.
+            return s11.note.create(scale[0], note_octave);
+
+            // let chord_tones = chord.chord;
+            // //previous note is always non null if first_note is false
+            // let note_octave = Math.round(this.#guassian_rand(previousNote.octave, 1, previousNote.octave - 1, previousNote.octave + 1)); //Center at previous octave
+            // if (note_octave > 6) note_octave = 6;
+            // if (note_octave < 3) note_octave = 3;
+              
+            // let note = chord_tones[Math.round(Math.random() * (chord_tones.length - 1))]; //Choose a random chord tone
+
+            // //Make sure note isn't too high to exist on a piano e.g. you aren't returning F8
+            // if (noteFreq[note_octave][note] === undefined) {
+            //     note_octave = 7;
+            // }
+            
 
         } else {
             //If there is not a jump, we move down or up in the scale by 1 note.
-            let scale = chord.scales()[0].scale;
-
             //Find the index of previous note in the scale
             let index = 0;
 
             for (let scale_tone of scale) {
-                if (scale_tone.name === previousNote.name) {
+                //Had to create new notes in order to make sure octave numbers were not accounted for in note.equals function. 
+                //Using the .equals ensures things like G## and A are treated as the same!
+
+                let curr_note = s11.note.create(scale_tone.name);
+                let to_find_note = s11.note.create(previousNote.name)
+                curr_note = curr_note.clean(); to_find_note = to_find_note.clean(); //Removes double accidentals and makes B#/Cb, E#/Fb all the same
+                this.#makeComparable(curr_note); this.#makeComparable(to_find_note);
+
+                if (curr_note.equals(to_find_note)) {
                     //Select a scale tone above or below previous note
                     if (Math.random() < 0.5) {
                         let new_octave = previousNote.octave;
@@ -345,10 +393,9 @@ class Improv {
                         if (noteFreq[new_octave][scale[lower_index].name] === undefined) {
                             new_octave++;
                         }
-
+                        console.log(scale + ", note: " + previousNote.name +", scale tone : " + scale_tone.name + ", next: " + scale[lower_index].name + new_octave)
                         return s11.note.create(scale[lower_index].name, new_octave); 
-                    }
-                    else {
+                    } else {
                         let new_octave = previousNote.octave;
                         let higher_index = index+1; //The tentative index of the new note to add
                         
@@ -368,11 +415,13 @@ class Improv {
                             new_octave--;
                         }
                         
+                        console.log(scale + ", note: " + previousNote.name +", scale tone : " + scale_tone.name + ", next: " + scale[higher_index].name + new_octave)
                         return s11.note.create(scale[higher_index].name, new_octave); 
                     }
                 }
                 index++;
             }
+            console.log("couldn't find " + scale + " , " + previousNote.name + " chord: " + chord.chord)
         }
         
     }
@@ -392,18 +441,34 @@ class Improv {
 
     /**
      * Generates a starting note from the chord tones and a normal distribution of octaves ranging from oct #2 - #6.
-     * @param {} chord (Sharp11 library chord object) the chord to choose a starting note for
+     * @param {} scale (Sharp11 library Scale Object) the scale to interpret the chord tones from and choose a starting note
      * @returns the starting note as a Sharp 11 Library Note Object
      */
-    #chooseStartingNote(chord) {
-        let starting_octave = Math.round(this.#guassian_rand(5, 1, 3, 7)); //Center at octave 5 
+    #chooseStartingNote(scale) {
+        let starting_octave = Math.round(this.#guassian_rand(5, 1, 3, 6)); //Center at octave 5 
+        if (starting_octave > 6) note_octave = 6;
+        if (starting_octave < 3) note_octave = 3;
+        let chord = s11.chord.create(s11.chord.getPossibleChordNamesFromArray(scale.scale)[0], starting_octave);
 
-        let chord_tones = chord.chord //array of note objects in the chord.
-        let starting_note = chord_tones[Math.round(Math.random() * (chord_tones.length - 1))]; //selected note might be incorrect octave, so we have next line.
-        starting_note = s11.note.create(starting_note.name, starting_octave) //Make starting_note in selected octave
 
-        return starting_note
+        //Try to find a random chord tone that is also in the scale.
+        let tries = 0;
+        while(tries < 10) {
+
+            let chord_tones = chord.chord //array of note objects in the chord.
+            let starting_note = chord_tones[Math.round(Math.random() * (chord_tones.length - 1))]; //selected note might be incorrect octave, so we have next line.
+            starting_note = s11.note.create(starting_note.name, starting_octave) //Make starting_note in selected octave
+
+            if (scale.contains(starting_note)) return starting_note;
+            tries++;
+        }
+
+        //If failed to find a chord tone in the scale, just return the first note in the scale.
+        return s11.note.create(scale.scale[0], starting_octave);
+        
     }
+
+   
 
     /**
      * Normal Random variable with bounds at a min and max
@@ -426,6 +491,25 @@ class Improv {
         while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
         while(v === 0) v = Math.random();
         return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    }
+
+    /**
+     * Makes all notes with flats, into sharps so that they can be compared with s11.note.equals
+     * IMPORTANT! Assumes that s11.note.clean() has already been run and removed double accidentals
+     * @param {*} note to be cleaned
+     */
+    #makeComparable(note) {
+        if (note.accidental === "b") {
+            note = note.shift(-1);
+            note = note.clean()
+            note = note.shift(1)
+
+            if (note.accidental === 'b') {
+                throw new Error("Make comparable failed");
+            }
+
+            return note;
+        } else return note;
     }
 
 
@@ -451,18 +535,18 @@ exports.handler = async (event, context) => {
 };
 
 
-// let chart = s11.chart.create(['A'], { A: [{ chord: 'C7', duration: 8 }, { chord: 'Fm7', duration: 4}]}, { foo: 1 });
-// console.log("Lambda invoked for chart titled: " + chart.info.title)
-// let improv = new Improv(0.5, "asdfasd", 0.2, chart, 125);
+let chart = s11.chart.create(['A'], { A: [{ chord: 'C7', duration: 8 }, { chord: 'Fm7', duration: 4}]}, { foo: 1 });
+console.log("Lambda invoked for chart titled: " + chart.info.title)
+let improv = new Improv(50, "asdfasd", 10, chart, 125);
 
-// let improv_gen = improv.improv();
-// let notes = []
-// let chords = []
+let improv_gen = improv.improv();
+let notes = []
+let chords = []
 
-// for (let obj of improv_gen) {
-//     notes.push(obj.notes);
-//     if (true) chords.push(obj.chord);
-// }
+for (let obj of improv_gen) {
+    notes.push(obj.notes);
+    if (true) chords.push(obj.chord);
+}
 
 // console.log( {
 //         "improv": JSON.stringify(notes),
