@@ -2,6 +2,8 @@
  * Developer: Vikram Bala
  * Contact: vikrambala2002@gmail.com
  * Github Repository: https://github.com/vbala29/Jazz-Improv-Bot#readme
+ * This AWS Lambda function is the improvization engine for the website.
+ * It generates jazz improvizations over a chord chart that a user inputs.
  */
 
 const s11 = require('sharp11');

@@ -10,25 +10,24 @@
 <%- include(partials + '/header.ejs') %>
 <style>
     .with-background {
-        background-image: url('images/jazzBackground.jpg');
+        background-image: url('images/JazzStandard.png');
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-size: cover;
     }
 </style>
 
+<section class="with-background" style="height: 600px">
 
-<div class="p-4 bg-light text-success rounded-3" style="margin-top: 2px; margin-bottom: 2px; margin-left: 5px; margin-right: 5px;">
+
+<div class="p-4 bg-transparent text-white rounded-3" style="margin-top: 2px; margin-bottom: 2px; margin-left: 5px; margin-right: 5px;">
     <div class="container-fluid py-1">
       <h1 class="display-6 fw-bold">The Jazz Improvization Bot</h1>
-      <p class="col-md-8 fs-7">
-          Information about the bot.
+      <p class="col-md-8 fs-7 text-primary">
+          Welcome to the Jazz Improvization Bot, a website where you can make your own chord changes, mess with some wacky jazz parameters, and then listen to the 
+          bot improvize over your chord changes! Please see below for more information on how to use this website!
       </p>
     </div>
-
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Instructions 
-    </button>
 
      <!-- Modal -->
      <div class="modal fade text-secondary" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -53,22 +52,24 @@
 </div>   
 
 
-<section class="with-background">
 
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non dignissimos facilis voluptatibus animi obcaecati placeat quidem veritatis voluptates nam, inventore excepturi aliquid. Quibusdam cumque et quam totam at ea ullam.
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ducimus pariatur aperiam natus a, tenetur officiis, incidunt rem quis magnam sunt ad nisi inventore itaque? Voluptatum quasi qui commodi minima eius.
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi accusamus eligendi inventore maiores quidem minus optio ipsa omnis alias voluptates hic possimus, facilis illo quod ipsam vitae asperiores, cum quisquam?
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Assumenda temporibus excepturi laborum ipsam vel iste unde ducimus repellat ab consequatur magni, nobis tempora! Commodi doloribus eos sit corporis dolorum porro.
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam blanditiis dolorem aut illum iusto voluptatem beatae sit ab quaerat illo maiores accusamus, dolorum est debitis laborum, enim, assumenda quisquam perspiciatis!
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil corrupti commodi, esse a laudantium ipsa perspiciatis sunt nam neque accusantium est quas fuga eveniet voluptatum consequuntur similique unde magnam ipsam.lorem
+    <p style="margin-left: 150px; margin-right: 150px; font-size: 20px; color: white">
+       <i> How To Use This Website</i>
+            <p style="margin-left: 200px; margin-right: 150px; font-size: 15px; color: white">
+                1. Make an account via the <a href="/login">Login</a> page. <br>
+                2. Visit the <a href="/improv" >Chart Maker</a> and create your composition. If you don't have 
+                any chord changes in mind, feel free to look up jazz standards chord charts at this <a href="http://therealbook.info/" target="_blank">online "real book"</a>. <br>
+                3. Once your chord chart has been validated by the parsing algorithm, you can visit the <a href="/improv/selectChart">Improvization Bot</a> to generate improvizations 
+                over your changes and hear them played back in real time! <br>
+                4. See the <a href="/about">about</a> page for more details on this website, and how it works! <br>
+                5. For questions and inquieries, please contact Vikram Bala via <a href="mailto:vikrambala2002@gmail.com">email</a>. 
+            </p>
+
     </p>
 
 </section>
 
-<footer>
-    <p>Footer header
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque ab officia suscipit? Impedit nam consectetur dolorum quo hic numquam fugiat dicta, itaque obcaecati, odio animi sed voluptatem fugit explicabo natus.
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, porro numquam voluptates quia eligendi omnis eaque tenetur a repellendus illo neque, voluptas id impedit beatae iure voluptatibus mollitia at repellat.
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Magni eligendi officiis necessitatibus rem reprehenderit velit debitis, vel excepturi exercitationem voluptatem, natus praesentium illum laboriosam ipsam consequuntur vero libero itaque. Inventore?
-    </p>
-</footer>
+<footer class="footer">
+    <!-- Footer -->
+    <%- include(partials + '/footer.ejs') %>
+   </footer>
