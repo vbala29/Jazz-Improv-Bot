@@ -231,9 +231,11 @@ class Improv {
     improv() {
         let chart_content = this.chart.content['A'];
         let improv = []
-
+        let prev_chord_note = null;
         for (let obj of chart_content) {
-            improv.push(this.#improvOverChord(obj.chord, obj.duration, this.substitutions, this.outness));
+            let chord_improv = this.#improvOverChord(obj.chord, obj.duration, this.substitutions, this.outness, prev_chord_note)
+            improv.push({notes: chord_improv.notes, chord: chord_improv.chord});
+            prev_chord_note = chord_improv.previousNote; //Save the last note played in the last chord, so you can do voice leading.
         }
 
         return improv
@@ -245,12 +247,12 @@ class Improv {
      * @param {*} duration 
      * @return an object consists of a "notes" and "chord" (a sharp11 chord object)
      */
-    #improvOverChord(chord, duration, substitutions, outness) {
+    #improvOverChord(chord, duration, substitutions, outness, prev_chord_note) {
         let num_beats = duration.beats;
 
         let improv_over_chord = []; //Array of beat arrays (which contain note arrays) representing improv
         let firstNote = true; //True if first note hasn't been played yet.
-        let previousNote = null; 
+        let previousNote = prev_chord_note; 
         let scale_arr = chord.scales() //Ordered in terms of most frequently used to least frequently used scales
         let scale; //Sharp 11 Object
         let tritone_sub = 0.4; //Probability of a tritone sub when a substitution is to take place
@@ -267,6 +269,12 @@ class Improv {
             scale = scale_arr[0]; //If not substitution, use the most frequently used scale 
         }
 
+        //If this is not the first chord in the chart, then don't use the starting_note found below, but rather perform voice leading.
+        if (previousNote != null) {
+            firstNote = false;
+        }
+
+        //Only used for the first chord in the chart.
         let starting_note = this.#chooseStartingNote(scale) //Determine the starting based on chords tones interpolated from the scale
 
         for (let i = 0; i < num_beats; i++) {
@@ -298,7 +306,7 @@ class Improv {
             improv_over_chord.push(improv_over_beat);
         }
 
-        return {notes: improv_over_chord, chord: chord};
+        return {notes: improv_over_chord, chord: chord, previousNote: previousNote};
     }
 
     /**
@@ -440,7 +448,7 @@ class Improv {
      * @returns the starting note as a Sharp 11 Library Note Object
      */
     #chooseStartingNote(scale) {
-        let starting_octave = Math.round(this.#guassian_rand(5, 1, 3, 6)); //Center at octave 5 
+        let starting_octave = Math.round(this.#guassian_rand(5, 1, 4, 6)); //Center at octave 5 
         if (starting_octave > 6) note_octave = 6;
         if (starting_octave < 3) note_octave = 3;
 

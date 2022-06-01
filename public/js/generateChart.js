@@ -107,11 +107,17 @@ var addChord = () => {
     li.appendChild(txt);
 
     //Input validation
-    //https://stackoverflow.com/questions/11229080/regex-for-matching-a-music-chord
-    var notes = "^[CDEFGAB]",
-    accidentals = "(b|#)?",
-    chords = "(m7|7)?",
-    regex = new RegExp("\\b" + notes + accidentals + chords + "\\b", "g");
+    var notes = "^[CDEFGAB]"; //Regex for possible notes at root of chords
+    let accidentals = "(b|#)?"; //Regex expression for possible accidentals of root notes of chords
+
+
+    let minor = "m7|m6|m7add9|m7add13|m7add9add13|mM7"
+    let major_and_dom = "7|M|M7|9|7b9|7b13|6|M7#11|M7add13|7#11|13b9|"
+    let half_full_dim = "m7b5|dim7|dim"
+    let misc = "aug|aug7|sus|sus7"
+    let chords = "(|" + minor + "|" + major_and_dom + "|" + half_full_dim + "|" + misc + "|)?"; //Regeax express for possible chord types
+
+    let regex = new RegExp("\\b" + notes + accidentals + chords + "\\b", "g"); //Create the regex from the 3 regex expressions 
 
     if(!regex.test(chordString)) {
         alert("Invlalid Chord Entered, Please See Instructions")

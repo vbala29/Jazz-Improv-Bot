@@ -43,7 +43,7 @@ async function generateChartObject(sections, section_chord_map, info, username) 
       let json_chart = JSON.stringify(chart.serialize());
       await User.findOne({'username': username}).exec(async (err, doc) => {
          if (err) { 
-            console.log("Error in Query /improv/generateChart: " + err);
+            console.error("Error in Query /improv/generateChart: " + err);
          } else {
             if (DEBUG) console.error("Result of Query: " + doc);
 
@@ -53,7 +53,7 @@ async function generateChartObject(sections, section_chord_map, info, username) 
       });
      
    } catch(err) {
-      console.log("Error caught in Chart Creation: " + err.message)
+      console.error("Error caught in Chart Creation: " + err.message)
       return -1;
    } 
 
@@ -95,7 +95,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                      //Send improv data back to the front end FETCH API request so it can play the improv
                      if (data != null) {
                         let payload = JSON.parse(data.Payload);
-                        console.log(payload)
+
                         let notes_and_durations = JSON.parse(payload.improv);
 
                         res.setHeader('Content-Type', 'application/json');
@@ -111,7 +111,7 @@ router.post('/improv/improviseOnChart', isLoggedIn, (req, res) => {
                         res.sendStatus(500); //Internal server error HTTP status code
                      }
                   }).catch(err => {
-                     console.log(err)
+                     console.error(err)
                      res.sendStatus(500); //Internal server error HTTP status code
                   });
             }
@@ -183,7 +183,7 @@ router.post('/improv/generateChart', isLoggedIn, (req, res) => {
          }
       }
    ).catch(
-      error => console.log("Error in generateChartObject(): " +  error.message)
+      error => console.error("Error in generateChartObject(): " +  error.message)
    );
 
 })
@@ -208,7 +208,7 @@ router.delete('/improv/deleteChart', isLoggedIn, (req, res) => {
                doc.charts.splice(index, 1); //Remove this chart
                doc.save((err) => {
                   if (err) {
-                     console.log("Error in deleting chart");
+                     console.error("Error in deleting chart");
                      res.sendStatus(500); //HTTP 500 Internal Servor Error
                   } else {
                      res.sendStatus(204); //HTTP 204 Resource Deleted Successfully

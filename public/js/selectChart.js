@@ -153,6 +153,7 @@ function createNoteTable() {
     noteFreq[1]["D#"] = 38.890872965260113;
     noteFreq[1]["Eb"] = 38.890872965260113;
     noteFreq[1]["E"] = 41.203444614108741;
+    noteFreq[1]["E#"] = 41.203444614108741;
     noteFreq[1]["Fb"] = 41.203444614108741;
     noteFreq[1]["F"] = 43.653528929125485;
     noteFreq[1]["F#"] = 46.249302838954299;
@@ -173,6 +174,7 @@ function createNoteTable() {
     noteFreq[2]["D#"] = 77.781745930520227;
     noteFreq[2]["Eb"] = 77.781745930520227;
     noteFreq[2]["E"] = 82.406889228217482;
+    noteFreq[2]["E#"] = 82.406889228217482;
     noteFreq[2]["Fb"] = 82.406889228217482;
     noteFreq[2]["F"] = 87.307057858250971;
     noteFreq[2]["F#"] = 92.498605677908599;
@@ -193,6 +195,7 @@ function createNoteTable() {
     noteFreq[3]["D#"] = 155.563491861040455;
     noteFreq[3]["Eb"] = 155.563491861040455;
     noteFreq[3]["E"] = 164.813778456434964;
+    noteFreq[3]["E#"] = 164.813778456434964;
     noteFreq[3]["Fb"] = 164.813778456434964;
     noteFreq[3]["F"] = 174.614115716501942;
     noteFreq[3]["F#"] = 184.997211355817199;
@@ -213,6 +216,7 @@ function createNoteTable() {
     noteFreq[4]["D#"] = 311.126983722080910;
     noteFreq[4]["Eb"] = 311.126983722080910;
     noteFreq[4]["E"] = 329.627556912869929;
+    noteFreq[4]["E#"] = 329.627556912869929;
     noteFreq[4]["Fb"] = 329.627556912869929;
     noteFreq[4]["F"] = 349.228231433003884;
     noteFreq[4]["F#"] = 369.994422711634398;
@@ -233,6 +237,7 @@ function createNoteTable() {
     noteFreq[5]["D#"] = 622.253967444161821;
     noteFreq[5]["Eb"] = 622.253967444161821;
     noteFreq[5]["E"] = 659.255113825739859;
+    noteFreq[5]["E#"] = 659.255113825739859;
     noteFreq[5]["Fb"] = 659.255113825739859;
     noteFreq[5]["F"] = 698.456462866007768;
     noteFreq[5]["F#"] = 739.988845423268797;
@@ -253,6 +258,7 @@ function createNoteTable() {
     noteFreq[6]["D#"] = 1244.507934888323642;
     noteFreq[6]["Eb"] = 1244.507934888323642;
     noteFreq[6]["E"] = 1318.510227651479718;
+    noteFreq[6]["E#"] = 1318.510227651479718;
     noteFreq[6]["Fb"] = 1318.510227651479718;
     noteFreq[6]["F"] = 1396.912925732015537;
     noteFreq[6]["F#"] = 1479.977690846537595;
@@ -273,6 +279,7 @@ function createNoteTable() {
     noteFreq[7]["D#"] = 2489.015869776647285;
     noteFreq[7]["Eb"] = 2489.015869776647285;
     noteFreq[7]["E"] = 2637.020455302959437;
+    noteFreq[7]["E#"] = 2637.020455302959437;
     noteFreq[7]["Fb"] = 2637.020455302959437;
     noteFreq[7]["F"] = 2793.825851464031075;
     noteFreq[7]["F#"] = 2959.955381693075191;
@@ -477,7 +484,14 @@ async function audioForImprovization(improv_array, chords_object_array, chords_b
                     if (note !== null) {
                         let fullname = note.fullName;
                         let name_len = fullname.length;
-                        let freq = noteFreq[parseInt(fullname.slice(name_len - 1))][fullname.slice(0, name_len-1)];
+                        let freq;
+
+                        //In case a note without an octave number is returned, set the default octave to 4. E.g. Eb = Eb4
+                        if (noteFreq[parseInt(fullname.slice(name_len - 1))] === undefined) {
+                            freq = noteFreq[4][fullname.slice(0, name_len)];
+                        } else {
+                            freq = noteFreq[parseInt(fullname.slice(name_len - 1))][fullname.slice(0, name_len-1)];
+                        } 
 
                         if (isNaN(freq)) {
                             console.error("UNABLE TO PLAY NOTE. See details below.")
