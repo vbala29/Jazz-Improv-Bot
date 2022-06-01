@@ -51,7 +51,8 @@ app.use(cors({
 /* Routes */
 
 const userRoutes = require('./routes/user')
-const improvRoutes = require('./routes/improv')
+const improv = require('./routes/improv')
+const improvRoutes = improv.routes
 
 /* MongoDB */
 

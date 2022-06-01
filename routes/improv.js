@@ -45,7 +45,6 @@ async function generateChartObject(sections, section_chord_map, info, username) 
          if (err) { 
             console.error("Error in Query /improv/generateChart: " + err);
          } else {
-            if (DEBUG) console.error("Result of Query: " + doc);
 
             await doc.charts.push({chart: json_chart, title: info.title});
             await doc.save();
@@ -171,8 +170,7 @@ router.get('/improv/selectChart', isLoggedIn, (req, res) => {
 
 router.post('/improv/generateChart', isLoggedIn, (req, res) => {
    let body = req.body; //Already JSON parsed by express json middleware
-   console.log(body.sections)
-   console.log(body.content)
+
    generateChartObject(body.sections, body.content, body.info, req.user.username).then(
       ret => {
          //Determine appropriate HTTP response
@@ -228,4 +226,7 @@ router.delete('/improv/deleteChart', isLoggedIn, (req, res) => {
 })
 
 
-module.exports = router;
+module.exports = {
+   routes: router,
+   generateChartObject: generateChartObject
+}

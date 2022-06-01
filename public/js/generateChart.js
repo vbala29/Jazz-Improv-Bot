@@ -118,7 +118,6 @@ var addChord = () => {
     let chords = "(" + minor + "|" + major_and_dom + "|" + half_full_dim + "|" + misc + ")?"; //Regex express for possible chord types
     let regex = new RegExp(notes + accidentals + chords + "$", 'g'); //Create the regex from the 3 regex expressions 
     let result = !regex.test(chordString)
-    console.log(regex.toString())
     
     if(result) {
         alert("Invalid Chord Entered, Please See Instructions")

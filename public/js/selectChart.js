@@ -401,6 +401,9 @@ function displayChart(chart) {
     //as it plays over them.
     let index = 0;
     for (pair of chart) {
+        if (index % 4 === 0) {
+            chart_section.innerHTML += "<br>";
+        } 
         chart_section.innerHTML += "<div id=\"" + index + "\" class=\"badge bg-primary text-wrap\" style=\"width: 6rem;\">" +
         "Chord: " + pair.chord.name + " Beats: " + pair.duration.beats + "</div>";
         index++; 
