@@ -543,23 +543,23 @@ exports.handler = async (event, context) => {
         }
 };
 
+//Code used for testing improv outside of AWS Lambda
+// let chart = s11.chart.create(['A'], { A: [{ chord: 'C7', duration: 8 }, { chord: 'Fm7', duration: 4}]}, { foo: 1 });
+// console.log("Lambda invoked for chart titled: " + chart.info.title)
+// let improv = new Improv(50, "asdfasd", 10, chart, 125);
 
-let chart = s11.chart.create(['A'], { A: [{ chord: 'C7', duration: 8 }, { chord: 'Fm7', duration: 4}]}, { foo: 1 });
-console.log("Lambda invoked for chart titled: " + chart.info.title)
-let improv = new Improv(50, "asdfasd", 10, chart, 125);
+// let improv_gen = improv.improv();
+// let notes = []
+// let chords = []
 
-let improv_gen = improv.improv();
-let notes = []
-let chords = []
+// for (let obj of improv_gen) {
+//     notes.push(obj.notes);
+//     if (true) chords.push(obj.chord);
+// }
 
-for (let obj of improv_gen) {
-    notes.push(obj.notes);
-    if (true) chords.push(obj.chord);
-}
-
-console.log( {
-        "improv": JSON.stringify(notes),
-        "chords": JSON.stringify(chords)
-    });
+// console.log( {
+//         "improv": JSON.stringify(notes),
+//         "chords": JSON.stringify(chords)
+//     });
 
     
