@@ -56,7 +56,7 @@ const improvRoutes = improv.routes
 
 /* MongoDB */
 
-mongoose.connect('mongodb://localhost:27017/jazz-improv', {
+mongoose.connect('mongodb://0.0.0.0:27017/jazz-improv', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
