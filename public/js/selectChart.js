@@ -397,7 +397,7 @@ function lambdaCall() {
 function displayChart(chart) {
     let chart_section = document.getElementsByClassName('chart-div')[0];
     
-    //let index is used in id field so that audioForImproization() can highlight the chords
+    //let index is used in id field so that audioForImprovization() can highlight the chords
     //as it plays over them.
 
     let chord_html = '<div class\"container\">'

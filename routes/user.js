@@ -41,6 +41,8 @@ router.delete('/deleteAccount', isLoggedIn, async (req, res) => {
     }
 })
 
+
+//Page to manage and delete one's account
 router.get('/account', isLoggedIn, (req, res) => {
     res.render('users/account', {username: req.user.username});
     res.end();
