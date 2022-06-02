@@ -1,11 +1,5 @@
 
-<div class="p-4 bg-light text-success with-background">
-    <div class="container-fluid py-1">
-      <h1 class="display-6 fw-bold">About Vikram's Jazz improvisation Bot</h1>
-      <p class="col-md-8 fs-7">
-          Information about the bot.
-      </p>
-    </div>
+
 
     <div class="row text-info" style="margin-top: 10px; margin-left: 20px">
       <p>  
@@ -96,4 +90,3 @@
     
 
 
-</div>   
