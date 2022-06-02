@@ -471,7 +471,7 @@ class Improv {
         for (let tone of scale.scale) {
             cleaned_scale_tones.push(tone.clean())
         }
-        //Clean notess so that you don't try creating chord from double sharp or flat key, because this will yield an error
+        //Clean notes so that you don't try creating chord from double sharp or flat key, because this will yield an error
         let chord = s11.chord.create(s11.chord.getPossibleChordNamesFromArray(cleaned_scale_tones)[0], starting_octave);
 
 
