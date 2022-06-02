@@ -28,7 +28,8 @@ However, this is not as simple as playing a C major scale over a C major chord. 
 the algorithm determines scales that might not be obvious. Based on the user chosen parameters on the improv bot page,
 a [diatonic chord](https://www.jazz-guitar-licks.com/blog/diatonic-chord-substitution.html) substitution</a> has a probability "s" of occurring for each chord in the chart. <br><br>
 
-If a diatonic substitution is determined to occur for a certain chord, the following happens. 1. We generate an array from the [Sharp11] library(https://github.com/jsrmath/sharp11)of the possible scales
+If a diatonic substitution is determined to occur for a certain chord, the following happens. 1. We generate an array from the 
+[Sharp11 library](https://github.com/jsrmath/sharp11)of the possible scales
 that can be played over that chord in order of most to least frequently played (most to least harmonically distant). All of these scales 
 contain the chord tones of the chord, so they are thus diatonic. Then, we use a uniform distribution to select one of the scales in the array. 
 <br><br>
