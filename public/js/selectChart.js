@@ -165,6 +165,7 @@ function createNoteTable() {
     noteFreq[1]["A#"] = 58.270470189761239;
     noteFreq[1]["Bb"] = 58.270470189761239;
     noteFreq[1]["B"] = 61.735412657015513;
+    noteFreq[1]["B#"] = 61.735412657015513;
     noteFreq[1]["Cb"] = 61.735412657015513;
   
     noteFreq[2]["C"] = 65.406391325149658;
@@ -186,6 +187,7 @@ function createNoteTable() {
     noteFreq[2]["A#"] = 116.540940379522479;
     noteFreq[2]["Bb"] = 116.540940379522479;
     noteFreq[2]["B"] = 123.470825314031027;
+    noteFreq[2]["B#"] = 123.470825314031027;
     noteFreq[2]["Cb"] = 123.470825314031027;
   
     noteFreq[3]["C"] = 130.812782650299317;
@@ -207,6 +209,7 @@ function createNoteTable() {
     noteFreq[3]["A#"] = 233.081880759044958;
     noteFreq[3]["Bb"] = 233.081880759044958;
     noteFreq[3]["B"] = 246.941650628062055;
+    noteFreq[3]["B#"] = 246.941650628062055;
     noteFreq[3]["Cb"] = 246.941650628062055;
   
     noteFreq[4]["C"] = 261.625565300598634;
@@ -228,6 +231,7 @@ function createNoteTable() {
     noteFreq[4]["A#"] = 466.163761518089916;
     noteFreq[4]["Bb"] = 466.163761518089916;
     noteFreq[4]["B"] = 493.883301256124111;
+    noteFreq[4]["B#"] = 493.883301256124111;
     noteFreq[4]["Cb"] = 493.883301256124111;
   
     noteFreq[5]["C"] = 523.251130601197269;
@@ -249,6 +253,7 @@ function createNoteTable() {
     noteFreq[5]["A#"] = 932.327523036179832;
     noteFreq[5]["Bb"] = 932.327523036179832;
     noteFreq[5]["B"] = 987.766602512248223;
+    noteFreq[5]["B#"] = 987.766602512248223;
     noteFreq[5]["Cb"] = 987.766602512248223;
   
     noteFreq[6]["C"] = 1046.502261202394538;
@@ -270,6 +275,7 @@ function createNoteTable() {
     noteFreq[6]["A#"] = 1864.655046072359665;
     noteFreq[6]["Bb"] = 1864.655046072359665;
     noteFreq[6]["B"] = 1975.533205024496447;
+    noteFreq[6]["B#"] = 1975.533205024496447;
     noteFreq[6]["Cb"] = 1975.533205024496447;
   
     noteFreq[7]["C"] = 2093.004522404789077;
@@ -291,6 +297,7 @@ function createNoteTable() {
     noteFreq[7]["A#"] = 3729.310092144719331;
     noteFreq[7]["Bb"] = 3729.310092144719331;
     noteFreq[7]["B"] = 3951.066410048992894;
+    noteFreq[7]["B#"] = 3951.066410048992894;
     noteFreq[7]["Cb"] = 3951.066410048992894;
   
     noteFreq[8]["C"] = 4186.009044809578154;
@@ -403,22 +410,22 @@ function displayChart(chart) {
     let chord_html = '<div class\"container\">'
     let index = 0;
     for (pair of chart) { 
-        if (index % 6 === 0) {
+        if (index % 4 === 0) {
             if (index > 0) {
                 chord_html += "</div>";
             }
             chord_html += " <div class=\"row\" style=\"margin-bottom: 8px;\">";
         } 
 
-        chord_html += "<div class=\"col-2\"><div id=\"" + index + "\" class=\"badge bg-primary text-wrap\" style=\"width: 8rem; margin-right: 8px;\">" +
+        chord_html += "<div class=\"col\"><div id=\"" + index + "\" class=\"badge bg-primary text-wrap\" style=\"width: 120px; margin-right: 8px;\">" +
         "Chord: " + pair.chord.name + " Beats: " + pair.duration.beats + "</div></div>";
         index++; 
     }
 
-    if (index - 1 % 2 === 0 && index - 1 > 0) {
-        chord_html += "</div>"; //close div for the last row, if not already added in
-    }
+    chord_html += "</div>"; //close div for the last row
     chord_html += "</div>"; //close div for the container 
+
+    console.log(chord_html)
 
     //We appended to string first, bc innerhtml property only allows for VALID wholly formed additions of html
     chart_section.innerHTML += chord_html; 
