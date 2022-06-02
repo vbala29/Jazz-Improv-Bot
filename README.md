@@ -38,8 +38,7 @@ contain the chord tones of the chord, so they are thus diatonic. Then, we use a 
 This means that the original chord is shifted a minor 5th (aka the tritone). The most common scale of the shifted chord is then chosen as the scale to be used. 
 
 <br><br>
-Based on user chosen parameters on the improv bot page, an ["out"](https://en.wikipedia.org/wiki/Outside_(jazz)) chord substitution</a> will be performed with probability "o".
-If an "out" substitution is determined to occur, it will override any diatonic substitution/tritone substitution. 
+Based on user chosen parameters on the improv bot page, an ["out"](https://en.wikipedia.org/wiki/Outside_(jazz)) chord substitution</a> will be performed with probability "o". If an "out" substitution is determined to occur, it will override any diatonic substitution/tritone substitution. 
 As of now, only diminished substitutions for dominant chords are implemented for these "out" chord substitutions.
 An example of this is that C7 would be replaced with Bbdim7/C#dim7, but nothing would be substituted for a Cminor7 chord, since this
 diminished substitution works best with dominant chords.  Future changes will include side stepping, coltrane changes, and polytonality with upper structures of chords. 
@@ -47,14 +46,12 @@ diminished substitution works best with dominant chords.  Future changes will in
 <br><br>
 
 <u>Choosing the first note of the improvisation</u> <br> The bot begins by selecting a starting note for the first chord in the chart by using a Gaussian normal distribution over octaves of the piano with mean = 5 and variance = 1.
-The minimum octave to be chosen is the 4th piano octave, and the max is the 6th octave. Note that the when the "play chords" option is ticked on the improvisation page,
-the piano plays chords in the 4th octave, so centering the Normal distribution around octave 5 meant that it is more likely that
+The minimum octave to be chosen is the 4th piano octave, and the max is the 6th octave. Note that the when the "play chords" option is ticked on the improvisation page, the piano plays chords in the 4th octave, so centering the Normal distribution around octave 5 meant that it is more likely that
 the solo starts above the chords, which sounds best. The algorithm then choses a chord tone of the first chord in the chart
 that is also in the scale that has been chosen previously. Thus, this chord tone in the chosen octave is returned as the starting note.
 
 <br><br>
-<u>Choosing a note duration</u> <br> For each tempo, there is a specific probability associated how likely a beat is to consist of solely a quarter note, 2 eight notes,
-3 eight note triplets, or 4 sixteenth notes. Attached is an image to the probabilities at each tempo range.        
+<u>Choosing a note duration</u> <br> For each tempo, there is a specific probability associated how likely a beat is to consist of solely a quarter note, 2 eight notes, 3 eight note triplets, or 4 sixteenth notes. Attached is an image to the probabilities at each tempo range.        
 The different probabilities were done to ensure that slow tempos did not have a lack of notes played, and that fast tempos still sounded good on the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)  (i.e. sixteenth notes don't sound good at 220 bpm on web audio so I disabled them). ![note_probabilities](https://user-images.githubusercontent.com/56012430/171744639-4d3e3500-469e-443c-b3f1-78dd8c8d8cc1.png)
 
 For each beat in a chord, we first determine what type of note duration will be played over it. Then, for each 
