@@ -24,7 +24,7 @@ or if it is simply a example of how music is only expressed at its best from emo
 
 <br><br>
 
-<u>Choosing a scale for each chord</u> <br>
+# Choosing a scale for each chord
 For each chord in the chart the improvisation bot chooses a scale to use to improvise over that chord. 
 However, this is not as simple as playing a C major scale over a C major chord. Using the outness and substitutions parameters,
 the algorithm determines scales that might not be obvious. Based on the user chosen parameters on the improv bot page,
@@ -45,21 +45,22 @@ diminished substitution works best with dominant chords.  Future changes will in
 
 <br><br>
 
-<u>Choosing the first note of the improvisation</u> <br> The bot begins by selecting a starting note for the first chord in the chart by using a Gaussian normal distribution over octaves of the piano with mean = 5 and variance = 1.
-The minimum octave to be chosen is the 4th piano octave, and the max is the 6th octave. Note that the when the "play chords" option is ticked on the improvisation page, the piano plays chords in the 4th octave, so centering the Normal distribution around octave 5 meant that it is more likely that
-the solo starts above the chords, which sounds best. The algorithm then choses a chord tone of the first chord in the chart
+# Choosing the first note of the improvisation
+The bot begins by selecting a starting note for the first chord in the chart by using a Gaussian normal distribution over octaves of the piano with mean = 5 and variance = 1. The minimum octave to be chosen is the 4th piano octave, and the max is the 6th octave. Note that the when the "play chords" option is ticked on the improvisation page, the piano plays chords in the 4th octave, so centering the Normal distribution around octave 5 meant that it is more likely that the solo starts above the chords, which sounds best. The algorithm then choses a chord tone of the first chord in the chart
 that is also in the scale that has been chosen previously. Thus, this chord tone in the chosen octave is returned as the starting note.
 
 <br><br>
-<u>Choosing a note duration</u> <br> For each tempo, there is a specific probability associated how likely a beat is to consist of solely a quarter note, 2 eight notes, 3 eight note triplets, or 4 sixteenth notes. Attached is an image to the probabilities at each tempo range.        
-The different probabilities were done to ensure that slow tempos did not have a lack of notes played, and that fast tempos still sounded good on the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)  (i.e. sixteenth notes don't sound good at 220 bpm on web audio so I disabled them). ![note_probabilities](https://user-images.githubusercontent.com/56012430/171744639-4d3e3500-469e-443c-b3f1-78dd8c8d8cc1.png)
+# Choosing a note duration
+For each tempo, there is a specific probability associated how likely a beat is to consist of solely a quarter note, 2 eight notes, 3 eight note triplets, or 4 sixteenth notes. Attached is an image to the probabilities at each tempo range.The different probabilities were done to ensure that slow tempos did not have a lack of notes played, and that fast tempos still sounded good on the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)  (i.e. sixteenth notes don't sound good at 220 bpm on web audio so I disabled them). ]
+![note_probabilities](https://user-images.githubusercontent.com/56012430/171744639-4d3e3500-469e-443c-b3f1-78dd8c8d8cc1.png)
 
 For each beat in a chord, we first determine what type of note duration will be played over it. Then, for each 
 of the notes in that beat (aka 4 notes if we choose sixteenth notes, or 1 note if we choose a quarter note), there is a user
 defined probability that the note will be a rest. If the note is a rest, we don't assign anything to it, and it will be silent when the audio visualizer plays the improvisation. 
 
 <br><br>
-<u>Choosing a note</u> <br> The generateNote() function takes in the chosen scale, 
+# Choosing a note
+The generateNote() function takes in the chosen scale, 
 the previous note in the improvisation, and the current chord. It also takes in a boolean
 indicating if a note has been improvised over the current chord as yet. <br><br>
 
