@@ -51,7 +51,8 @@ that is also in the scale that has been chosen previously. Thus, this chord tone
 
 <br><br>
 # Choosing a note duration
-For each tempo, there is a specific probability associated how likely a beat is to consist of solely a quarter note, 2 eight notes, 3 eight note triplets, or 4 sixteenth notes. Attached is an image to the probabilities at each tempo range.The different probabilities were done to ensure that slow tempos did not have a lack of notes played, and that fast tempos still sounded good on the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)  (i.e. sixteenth notes don't sound good at 220 bpm on web audio so I disabled them). ]
+For each tempo, there is a specific probability associated how likely a beat is to consist of solely a quarter note, 2 eight notes, 3 eight note triplets, or 4 sixteenth notes. Attached is an image to the probabilities at each tempo range.The different probabilities were done to ensure that slow tempos did not have a lack of notes played, and that fast tempos still sounded good on the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)  (i.e. sixteenth notes don't sound good at 220 bpm on web audio so I disabled them).
+
 ![note_probabilities](https://user-images.githubusercontent.com/56012430/171744639-4d3e3500-469e-443c-b3f1-78dd8c8d8cc1.png)
 
 For each beat in a chord, we first determine what type of note duration will be played over it. Then, for each 
