@@ -88,22 +88,25 @@
         <br><br>
         <u>Choosing a note</u> <br> The generateNote() function takes in the chosen scale, 
         the previous note in the whole improvization (not just the current chord), and the current chord. It also takes in a boolean
-        indicating if a note has been improvized over the current chord as yet. A parameter "jumps" which is set to 30% signifies
+        indicating if a note has been improvized over the current chord as yet. <br><br>
+        
+        <i> Jump Case: </i>  A parameter "jumps" which is set to 30% signifies
         whether the next note in the improvization will be allowed to be more than 1 scale tone away from the previous note. This will
         be a user defined parameter in a later revision of this website. If a jump is determined to occur, then 
-        we use the guassian normal distribution with a mean at the previous note's octave, and a variance of 1 to select a new octave.
+        we use the Guassian Normal distribution with a mean at the previous note's octave, and a variance of 1 to select a new octave.
         The newly chosen octave can at most be one octave away from the previous octave to prevent large jumps. 
-
-
+        We then choose a random chord tone from a uniform distribution that is also in the current scale, and return this as the chosen note. 
         <br><br>
-        <u>Voice Leading</u>
+
+        <i> Non-Jump Case: </i>If a jump is not to happen, we chose a note either 1 above or 1 below (each with 50% probability) the previous note in the chosen scale. 
+        <br><br>
 
 
+        <u>Voice Leading:</u> Voice leading is the process of using linear melodic lines to create transitions
+        between chords that outline the harmony of the chords clearly for the listener. By using scalar
+        motion (the non jump improvization), and making each improvization over a chord start on a chord tone, I simulated some amount of voice leading.
 
-
-
-
-
+        
 
         
       </p>
