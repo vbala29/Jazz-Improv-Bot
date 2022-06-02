@@ -350,7 +350,7 @@ class Improv {
             //Jumps ONLY transistion to chord tones!
             let note_octave = Math.round(this.#guassian_rand(previousNote.octave, 1, previousNote.octave - 1, previousNote.octave + 1)); //Center at octave 5 
             if (note_octave > 6) note_octave = 6;
-            if (note_octave < 3) note_octave = 3;
+            if (note_octave < 4) note_octave = 4;
 
              //Clean notes so that you don't try creating chord from double sharp or flat key, because this will yield an error
              let cleaned_scale_tones = []
@@ -465,7 +465,7 @@ class Improv {
     #chooseStartingNote(scale) {
         let starting_octave = Math.round(this.#guassian_rand(5, 1, 4, 6)); //Center at octave 5 
         if (starting_octave > 6) note_octave = 6;
-        if (starting_octave < 3) note_octave = 3;
+        if (starting_octave < 4) note_octave = 4;
 
         let cleaned_scale_tones = []
         for (let tone of scale.scale) {
