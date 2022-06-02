@@ -20,7 +20,7 @@ or if it is simply a example of how music is only expressed at its best from emo
 
 <br><br>
 
-<b>How Does The Bot Work?</b>  
+# How Does The Bot Work?
 
 <br><br>
 
