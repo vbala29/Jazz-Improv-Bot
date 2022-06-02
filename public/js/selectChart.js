@@ -399,15 +399,29 @@ function displayChart(chart) {
     
     //let index is used in id field so that audioForImproization() can highlight the chords
     //as it plays over them.
+
+    let chord_html = '<div class\"container\">'
     let index = 0;
-    for (pair of chart) {
-        if (index % 4 === 0) {
-            chart_section.innerHTML += "<br>";
+    for (pair of chart) { 
+        if (index % 6 === 0) {
+            if (index > 0) {
+                chord_html += "</div>";
+            }
+            chord_html += " <div class=\"row\" style=\"margin-bottom: 8px;\">";
         } 
-        chart_section.innerHTML += "<div id=\"" + index + "\" class=\"badge bg-primary text-wrap\" style=\"width: 6rem;\">" +
-        "Chord: " + pair.chord.name + " Beats: " + pair.duration.beats + "</div>";
+
+        chord_html += "<div class=\"col-2\"><div id=\"" + index + "\" class=\"badge bg-primary text-wrap\" style=\"width: 8rem; margin-right: 8px;\">" +
+        "Chord: " + pair.chord.name + " Beats: " + pair.duration.beats + "</div></div>";
         index++; 
     }
+
+    if (index - 1 % 2 === 0 && index - 1 > 0) {
+        chord_html += "</div>"; //close div for the last row, if not already added in
+    }
+    chord_html += "</div>"; //close div for the container 
+
+    //We appended to string first, bc innerhtml property only allows for VALID wholly formed additions of html
+    chart_section.innerHTML += chord_html; 
 }
 
 /**
@@ -489,9 +503,9 @@ async function audioForImprovization(improv_array, chords_object_array, chords_b
                         let name_len = fullname.length;
                         let freq;
 
-                        //In case a note without an octave number is returned, set the default octave to 4. E.g. Eb = Eb4
+                        //In case a note without an octave number is returned, set the default octave to 5. E.g. Eb = Eb5
                         if (noteFreq[parseInt(fullname.slice(name_len - 1))] === undefined) {
-                            freq = noteFreq[4][fullname.slice(0, name_len)];
+                            freq = noteFreq[5][fullname.slice(0, name_len)];
                         } else {
                             freq = noteFreq[parseInt(fullname.slice(name_len - 1))][fullname.slice(0, name_len-1)];
                         } 
