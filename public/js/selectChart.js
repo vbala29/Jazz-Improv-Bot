@@ -320,8 +320,7 @@ function generateCallbacks() {
 function deleteChart() {
     if (running) interrupt = true; //Interrupt any current audio process
     cleanUpDisplayAndAudio(); //Also deletes any current audio oscilaltors
-
-    fetch('http://localhost:3000/improv/deleteChart', {
+    fetch('http://ec2-52-204-233-92.compute-1.amazonaws.com:3000/improv/deleteChart', {
         method: 'DELETE',
         mode: 'cors',
         headers: {
@@ -375,7 +374,7 @@ function lambdaCall() {
     }
 
 
-    fetch('http://localhost:3000/improv/improviseOnChart', {
+    fetch('http://ec2-52-204-233-92.compute-1.amazonaws.com:3000/improv/improviseOnChart', {
         method: 'POST',
         mode: 'cors',
         headers: {

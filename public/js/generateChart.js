@@ -70,7 +70,7 @@ function generateChartParams() {
     //JSON to be sent to backend to be made into Sharp11 Chart Object
     var chartPackage = {sections: sections, content: section_chord_map, info: info};
 
-    fetch('http://localhost:3000/improv/generateChart', {
+    fetch('http://ec2-52-204-233-92.compute-1.amazonaws.com:3000/improv/generateChart', {
         method: 'POST',
         mode: 'cors',
         headers: {

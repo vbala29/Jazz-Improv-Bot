@@ -5,7 +5,7 @@
  */
 
 function deleteAccount() {
-    fetch('http://localhost:3000/deleteAccount', {
+    fetch('http://ec2-52-204-233-92.compute-1.amazonaws.com:3000/deleteAccount', {
         method: 'DELETE',
         mode: 'cors',
     }).then(res => {
